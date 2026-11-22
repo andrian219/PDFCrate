@@ -1,0 +1,1740 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>PDFCrate — Word, Foto &amp; Alat PDF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#faf6f0; --surface:#ffffff; --surface2:#f3ece2; --ink:#2b211a; --ink-soft:#6f5d4f;
+    --line:#e5d9c9; --accent:#8a5a33; --accent-strong:#71471f; --accent-ink:#ffffff;
+    --green:#3e6b4f; --green-soft:#e3efe6; --danger:#b3402e; --danger-soft:#fbeae6;
+    --shadow:0 10px 30px rgba(90,60,30,.10); --radius:16px;
+  }
+  html[data-theme="dark"]{
+    --bg:#171310; --surface:#221c17; --surface2:#2b231c; --ink:#f2e9de; --ink-soft:#bfae9c;
+    --line:#3d3227; --accent:#d29a5f; --accent-strong:#e2ac72; --accent-ink:#241708;
+    --green:#8fc7a2; --green-soft:#223129; --danger:#f0927e; --danger-soft:#3a241f;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  button,[role="button"],select,input:not([type="checkbox"],[type="radio"]){min-height:2.25rem}
+  button{font-family:inherit;cursor:pointer}
+  a{color:var(--accent)}
+  .wrap{max-width:880px;margin:0 auto;padding:20px 16px 48px}
+
+  /* Header */
+  header.top{display:flex;align-items:center;gap:14px;padding:10px 0 18px}
+  .avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:top center;border:3px solid var(--surface);box-shadow:var(--shadow);background:#fff;flex:none}
+  .brand h1{margin:0;font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+  .brand h1 span{color:var(--accent)}
+  .brand p{margin:4px 0 0;color:var(--ink-soft);font-size:14px}
+  .theme-btn{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;box-shadow:var(--shadow)}
+  .theme-btn svg{width:20px;height:20px}
+  .theme-btn .icon-sun{display:none}
+  html[data-theme="dark"] .theme-btn .icon-sun{display:block}
+  html[data-theme="dark"] .theme-btn .icon-moon{display:none}
+
+  .privacy{display:flex;gap:10px;align-items:flex-start;background:var(--green-soft);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;font-size:13.5px;line-height:1.5;color:var(--ink)}
+  .privacy svg{width:18px;height:18px;flex:none;margin-top:1px;color:var(--green)}
+  .privacy b{font-weight:700}
+
+  /* Menu fitur — tombol garis tiga di sudut header */
+  .menu-wrap{position:relative;margin-left:auto;flex:none}
+  .menu-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;box-shadow:var(--shadow)}
+  .menu-btn svg{width:20px;height:20px}
+  .menu{position:absolute;top:calc(100% + 10px);right:0;z-index:40;min-width:238px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:6px;display:none}
+  .menu.open{display:block}
+  .menu .menu-title{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px 4px}
+  .menu button{width:100%;border:0;background:transparent;color:var(--ink-soft);font-weight:700;font-size:14px;border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;text-align:left;min-height:44px}
+  .menu button svg{width:18px;height:18px;flex:none}
+  .menu button .check{margin-left:auto;width:16px;height:16px;color:var(--accent);visibility:hidden}
+  .menu button:hover{background:var(--surface2)}
+  .menu button[aria-checked="true"]{background:var(--surface2);color:var(--ink)}
+  .menu button[aria-checked="true"] .check{visibility:visible}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);margin-top:16px}
+  .panel[hidden]{display:none}
+  .panel h2{margin:0 0 4px;font-size:19px;font-weight:800}
+  .panel .sub{margin:0 0 16px;color:var(--ink-soft);font-size:13.5px;line-height:1.55}
+
+  .drop{border:2px dashed var(--line);border-radius:var(--radius);padding:30px 18px;text-align:center;background:var(--surface2);transition:border-color .15s,background .15s}
+  .drop.drag{border-color:var(--accent);background:var(--green-soft)}
+  .drop svg{width:40px;height:40px;color:var(--accent);margin-bottom:8px}
+  .drop p{margin:0 0 4px;font-weight:700;font-size:15px}
+  .drop small{color:var(--ink-soft);font-size:12.5px}
+  .drop .pick{margin-top:14px}
+  .fileinput{font-family:inherit;font-size:13px;color:var(--ink-soft);max-width:100%;min-height:44px}
+  .fileinput::file-selector-button{font-family:inherit;font-weight:700;font-size:14.5px;background:var(--accent);border:1px solid var(--accent);color:var(--accent-ink);border-radius:12px;padding:10px 18px;min-height:44px;margin-right:10px;cursor:pointer}
+  .fileinput::file-selector-button:hover{background:var(--accent-strong)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;font-size:14.5px;padding:10px 18px;min-height:44px}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .btn.primary:hover{background:var(--accent-strong)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn svg{width:18px;height:18px}
+  .btn.small{min-height:38px;padding:7px 13px;font-size:13.5px;border-radius:10px}
+
+  .filechip{display:none;align-items:center;gap:12px;margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
+  .filechip.show{display:flex}
+  .filechip .fi{width:40px;height:40px;border-radius:10px;background:var(--surface2);display:grid;place-items:center;flex:none;color:var(--accent)}
+  .filechip .fi svg{width:20px;height:20px}
+  .filechip .meta{min-width:0;flex:1}
+  .filechip .meta b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .filechip .meta small{color:var(--ink-soft);font-size:12px}
+  .icon-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);display:grid;place-items:center;flex:none}
+  .icon-btn svg{width:17px;height:17px}
+
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;align-items:center}
+  .status{font-size:13.5px;color:var(--ink-soft);min-height:20px;margin-top:12px;line-height:1.5}
+  .status.err{color:var(--danger)}
+  .status.ok{color:var(--green);font-weight:600}
+  progress{width:100%;height:8px;appearance:none;margin-top:8px;display:none}
+  progress.show{display:block}
+  progress::-webkit-progress-bar{background:var(--surface2);border-radius:99px}
+  progress::-webkit-progress-value{background:var(--accent);border-radius:99px}
+  progress::-moz-progress-bar{background:var(--accent);border-radius:99px}
+
+  /* Doc preview */
+  .preview-wrap{margin-top:18px;display:none}
+  .preview-wrap.show{display:block}
+  .preview-wrap h3{font-size:14px;margin:0 0 8px;color:var(--ink-soft);font-weight:700}
+  .preview-scroll{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#8f8578;max-height:70vh}
+  html[data-theme="dark"] .preview-scroll{background:#0d0b09}
+  /* Halaman dokumen asli dari docx-preview: tiap section.docx adalah satu
+     halaman .docx persis seperti di Word (ukuran, margin, gaya, tabel,
+     posisi gambar dipertahankan — bukan teks yang disusun ulang). */
+  .preview-scroll .docx-wrapper{background:transparent;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:16px}
+  .preview-scroll section.docx{background:#fff;color:#000;box-shadow:0 4px 18px rgba(0,0,0,.25);margin:0;flex:none}
+  .preview-scroll section.docx table{border-collapse:collapse}
+  /* Mode tangkap untuk PDF: bayangan & jarak antarhalaman dimatikan supaya
+     hasil render bersih tepi-ke-tepi. */
+  .preview-scroll.capturing .docx-wrapper{padding:0;gap:0}
+  .preview-scroll.capturing section.docx{box-shadow:none}
+
+  /* Options */
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  @media (max-width:560px){.opts{grid-template-columns:1fr}}
+  .opts label{font-size:12.5px;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:6px}
+  .opts select{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:9px 10px;font-family:inherit;font-size:14px;min-height:44px}
+  .opts .full{grid-column:1/-1}
+  .opts .hint{font-size:12px;color:var(--ink-soft);line-height:1.5;margin-top:6px}
+  .quality-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:6px}
+  .quality-head label{margin-bottom:0}
+  .quality-value{font-size:13px;font-weight:800;color:var(--accent);white-space:nowrap}
+  .quality-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .quality-presets button{border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);font-weight:700;font-size:12.5px;border-radius:999px;padding:7px 12px;min-height:36px}
+  .quality-presets button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  input[type="range"].quality-range{width:100%;min-height:44px;accent-color:var(--accent);cursor:pointer;margin:0}
+  .quality-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);margin-top:-4px}
+  .target-input{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:9px 10px;font-family:inherit;font-size:14px;min-height:44px}
+  .target-row{display:flex;gap:8px;align-items:center}
+  .target-row .target-input{flex:1}
+  .target-row .target-unit{font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+  .result-meta{padding:8px 10px;background:var(--surface);font-size:12px;line-height:1.5;color:var(--ink-soft)}
+  .result-meta b{color:var(--ink);font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .result-meta .miss{color:var(--danger);font-weight:700}
+
+  /* Photo grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px;margin-top:16px}
+  .grid:empty{display:none}
+  .thumb{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface2);position:relative}
+  .thumb .imgbox{aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;background:#00000010}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb .num{position:absolute;top:6px;left:6px;background:rgba(20,12,6,.78);color:#fff;font-size:11.5px;font-weight:700;border-radius:99px;padding:2px 9px}
+  .thumb .tools{display:flex;gap:4px;padding:6px;background:var(--surface)}
+  .thumb .tools button{flex:1;min-height:34px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;display:grid;place-items:center;padding:4px}
+  .thumb .tools button svg{width:15px;height:15px}
+  .thumb .tools button.del{color:var(--danger)}
+
+  .note{margin-top:22px;font-size:13px;color:var(--ink-soft);line-height:1.6;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+  .note b{color:var(--ink)}
+
+  /* Daftar berkas (Gabung PDF) */
+  .filelist{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+  .filelist:empty{display:none}
+  .fileitem{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:9px 11px;background:var(--surface)}
+  .fileitem .fi{width:36px;height:36px;border-radius:9px;background:var(--surface2);display:grid;place-items:center;flex:none;color:var(--accent)}
+  .fileitem .fi svg{width:18px;height:18px}
+  .fileitem .meta{min-width:0;flex:1}
+  .fileitem .meta b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fileitem .meta small{color:var(--ink-soft);font-size:12px}
+  .fileitem .tools{display:flex;gap:4px;flex:none}
+  .fileitem .tools button{width:34px;height:34px;min-height:34px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;display:grid;place-items:center;padding:4px}
+  .fileitem .tools button svg{width:15px;height:15px}
+  .fileitem .tools button.del{color:var(--danger)}
+  .fileitem .tools button:disabled{opacity:.35;cursor:not-allowed}
+
+  /* Kartu halaman PDF (PDF jadi Foto & Atur Halaman) */
+  .pagegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px;margin-top:16px}
+  .pagegrid:empty{display:none}
+  .pagecard{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface2);position:relative}
+  .pagecard .imgbox{aspect-ratio:4/5;display:grid;place-items:center;overflow:hidden;background:#fff}
+  .pagecard .imgbox img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}
+  .pagecard .num{position:absolute;top:6px;left:6px;background:rgba(20,12,6,.78);color:#fff;font-size:11.5px;font-weight:700;border-radius:99px;padding:2px 9px;z-index:1}
+  .pagecard .tools{display:flex;gap:4px;padding:6px;background:var(--surface)}
+  .pagecard .tools button,.pagecard .tools a{flex:1;min-height:34px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;display:grid;place-items:center;padding:4px;text-decoration:none}
+  .pagecard .tools button svg,.pagecard .tools a svg{width:15px;height:15px}
+  .pagecard .tools button.del{color:var(--danger)}
+  .pagecard .tools button:disabled{opacity:.35;cursor:not-allowed}
+  .pagecard.removed{opacity:.45}
+  .empty-note{margin-top:14px;font-size:13px;color:var(--ink-soft)}
+
+  footer{margin-top:26px;text-align:center;color:var(--ink-soft);font-size:12.5px;line-height:1.7}
+  footer .foot-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:top center;vertical-align:middle;margin-right:6px;background:#fff}
+  footer a.donasi{color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px}
+  footer a.donasi:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <img class="avatar" src="data:image/webp;base64,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" alt="Avatar Akari" />
+    <div class="brand">
+      <h1>PDF<span>Crate</span></h1>
+      <p>Semua urusan PDF beres dari HP-mu.</p>
+    </div>
+    <div class="menu-wrap">
+      <button class="menu-btn" id="menuBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="fiturMenu" aria-label="Pilih fitur">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="menu" id="fiturMenu" role="menu" aria-label="Pilih fitur">
+        <div class="menu-title">Pilih fitur</div>
+        <button type="button" role="menuitemradio" id="tabWord" aria-checked="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+          Word ke PDF
+          <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </button>
+        <button type="button" role="menuitemradio" id="tabFoto" aria-checked="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          Foto ke PDF
+          <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </button>
+        <button type="button" role="menuitemradio" id="tabGabung" aria-checked="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M16 21h3a2 2 0 0 0 2-2v-3M8 21H5a2 2 0 0 1-2-2v-3M12 8v8M8 12h8"/></svg>
+          Gabung PDF
+          <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </button>
+        <button type="button" role="menuitemradio" id="tabPdfFoto" aria-checked="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><circle cx="11" cy="13" r="2"/><path d="M7 20l3-3 2 2 3-3 2 2"/></svg>
+          PDF jadi Foto
+          <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </button>
+        <button type="button" role="menuitemradio" id="tabAtur" aria-checked="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg>
+          Atur Halaman PDF
+          <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </button>
+        <button type="button" role="menuitemradio" id="tabKompres" aria-checked="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M16 21v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
+          Kecilkan Foto
+          <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </button>
+      </div>
+    </div>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Ganti mode gelap / terang">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </header>
+
+  <div class="privacy">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    <div><b>Privat — berkasmu tidak ke mana-mana.</b> Semua proses berjalan di dalam browser perangkatmu. Tidak ada unggahan ke server, tidak ada yang disimpan. Tutup halaman ini, selesai.</div>
+  </div>
+
+  <!-- ============ WORD PANEL ============ -->
+  <section class="panel" id="panelWord" role="tabpanel" aria-labelledby="tabWord">
+    <h2>Word ke PDF</h2>
+    <p class="sub">Pilih berkas <b>.docx</b> (Word modern), lihat pratinjaunya, lalu unduh sebagai PDF. Dokumen ditampilkan mengikuti tata letak aslinya — gaya teks, tabel, dan posisi gambar dipertahankan seperti di Word. Format .doc lama tidak didukung.</p>
+
+    <div class="drop" id="dropWord">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>
+      <p>Tarik &amp; letakkan berkas .docx di sini</p>
+      <small>atau pakai tombol di bawah — berkas tidak diunggah ke mana pun</small>
+      <div class="pick"><input type="file" class="fileinput" id="fileWord" aria-label="Pilih berkas Word (.docx)" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" /></div>
+    </div>
+
+    <div class="filechip" id="chipWord">
+      <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+      <div class="meta"><b id="chipWordName">—</b><small id="chipWordSize">—</small></div>
+      <button class="icon-btn" id="chipWordRemove" type="button" aria-label="Hapus berkas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="preview-wrap" id="previewWrap">
+      <h3>Pratinjau dokumen</h3>
+      <div class="preview-scroll" id="docPreview"></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="btnWord" type="button" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+        Buat &amp; Unduh PDF
+      </button>
+    </div>
+    <progress id="progWord" max="100" value="0"></progress>
+    <div class="status" id="statusWord" role="status"></div>
+  </section>
+
+  <!-- ============ FOTO PANEL ============ -->
+  <section class="panel" id="panelFoto" role="tabpanel" aria-labelledby="tabFoto" hidden>
+    <h2>Foto ke PDF</h2>
+    <p class="sub">Pilih beberapa foto sekaligus (JPG, PNG, WebP) — tiap foto jadi satu halaman PDF. Urutannya bisa diatur sebelum dibuat, dan kualitas hasilnya bisa diatur di bawah: makin tinggi kualitasnya makin tajam gambarnya, makin besar pula ukuran berkas PDF-nya.</p>
+
+    <div class="drop" id="dropFoto">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <p>Tarik &amp; letakkan foto di sini</p>
+      <small>bisa banyak sekaligus — foto tidak diunggah ke mana pun</small>
+      <div class="pick"><input type="file" class="fileinput" id="fileFoto" aria-label="Pilih foto" accept="image/*" multiple /></div>
+    </div>
+
+    <div class="grid" id="gridFoto"></div>
+
+    <div class="opts">
+      <div>
+        <label for="optPage">Ukuran halaman</label>
+        <select id="optPage">
+          <option value="a4" selected>A4</option>
+          <option value="letter">Letter</option>
+          <option value="fit">Ikuti ukuran foto</option>
+        </select>
+      </div>
+      <div>
+        <label for="optMargin">Margin halaman</label>
+        <select id="optMargin">
+          <option value="0">Tanpa margin (penuh)</option>
+          <option value="10" selected>Sedang — 10 mm</option>
+          <option value="20">Lebar — 20 mm</option>
+        </select>
+      </div>
+      <div class="full">
+        <div class="quality-head">
+          <label for="optQuality">Kualitas foto</label>
+          <span class="quality-value" id="qualityValue">92% · Tinggi</span>
+        </div>
+        <div class="quality-presets" role="group" aria-label="Pilihan cepat kualitas foto">
+          <button type="button" data-quality="100">Maksimal</button>
+          <button type="button" data-quality="92" aria-pressed="true">Tinggi</button>
+          <button type="button" data-quality="80">Seimbang</button>
+          <button type="button" data-quality="60">Hemat</button>
+        </div>
+        <input type="range" class="quality-range" id="optQuality" min="40" max="100" step="1" value="92" aria-describedby="qualityHint" />
+        <div class="quality-scale"><span>40% — berkas paling kecil</span><span>100% — paling tajam</span></div>
+        <div class="hint" id="qualityHint">Kualitas tinggi: gambar tajam seperti aslinya, ukuran PDF lebih besar. Turunkan kalau PDF-nya mau dikirim lewat WA atau email.</div>
+      </div>
+      <div>
+        <label for="optResolusi">Resolusi foto</label>
+        <select id="optResolusi">
+          <option value="0" selected>Asli — tanpa diperkecil</option>
+          <option value="3000">Tinggi — maks. 3000 px</option>
+          <option value="2000">Sedang — maks. 2000 px</option>
+          <option value="1280">Ringan — maks. 1280 px</option>
+        </select>
+      </div>
+      <div>
+        <label>Perkiraan hasil</label>
+        <div class="hint" id="sizeHint" style="margin-top:0">Pilih foto dulu — perkiraan ukuran PDF muncul di sini, ukuran pastinya tampil setelah PDF dibuat.</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="btnFoto" type="button" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+        Buat &amp; Unduh PDF
+      </button>
+      <button class="btn" id="btnFotoClear" type="button" disabled>Hapus semua</button>
+    </div>
+    <progress id="progFoto" max="100" value="0"></progress>
+    <div class="status" id="statusFoto" role="status"></div>
+  </section>
+
+  <!-- ============ GABUNG PDF PANEL ============ -->
+  <section class="panel" id="panelGabung" role="tabpanel" aria-labelledby="tabGabung" hidden>
+    <h2>Gabung PDF</h2>
+    <p class="sub">Pilih beberapa berkas PDF sekaligus, atur urutannya, lalu gabungkan jadi satu PDF. Urutan dari atas ke bawah adalah urutan halaman di hasil akhir.</p>
+
+    <div class="drop" id="dropGabung">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>
+      <p>Tarik &amp; letakkan berkas PDF di sini</p>
+      <small>bisa banyak sekaligus — berkas tidak diunggah ke mana pun</small>
+      <div class="pick"><input type="file" class="fileinput" id="fileGabung" aria-label="Pilih berkas PDF untuk digabung" accept=".pdf,application/pdf" multiple /></div>
+    </div>
+
+    <div class="filelist" id="listGabung"></div>
+
+    <div class="actions">
+      <button class="btn primary" id="btnGabung" type="button" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+        Gabung &amp; Unduh PDF
+      </button>
+      <button class="btn" id="btnGabungClear" type="button" disabled>Hapus semua</button>
+    </div>
+    <progress id="progGabung" max="100" value="0"></progress>
+    <div class="status" id="statusGabung" role="status"></div>
+  </section>
+
+  <!-- ============ PDF JADI FOTO PANEL ============ -->
+  <section class="panel" id="panelPdfFoto" role="tabpanel" aria-labelledby="tabPdfFoto" hidden>
+    <h2>PDF jadi Foto</h2>
+    <p class="sub">Pilih satu berkas PDF — tiap halamannya diubah jadi gambar. Cocok buat mengirim satu halaman lewat WA atau menyisipkan halaman PDF ke dokumen lain.</p>
+
+    <div class="drop" id="dropPdfFoto">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>
+      <p>Tarik &amp; letakkan berkas PDF di sini</p>
+      <small>atau pakai tombol di bawah — berkas tidak diunggah ke mana pun</small>
+      <div class="pick"><input type="file" class="fileinput" id="filePdfFoto" aria-label="Pilih berkas PDF untuk dijadikan foto" accept=".pdf,application/pdf" /></div>
+    </div>
+
+    <div class="filechip" id="chipPdfFoto">
+      <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+      <div class="meta"><b id="chipPdfFotoName">—</b><small id="chipPdfFotoSize">—</small></div>
+      <button class="icon-btn" id="chipPdfFotoRemove" type="button" aria-label="Hapus berkas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="opts">
+      <div>
+        <label for="optPdfFotoFormat">Format gambar</label>
+        <select id="optPdfFotoFormat">
+          <option value="jpeg" selected>JPG — ukuran lebih kecil</option>
+          <option value="png">PNG — paling tajam, ukuran lebih besar</option>
+        </select>
+      </div>
+      <div>
+        <label for="optPdfFotoScale">Ketajaman render</label>
+        <select id="optPdfFotoScale">
+          <option value="1.5">Sedang — cepat, cukup buat layar HP</option>
+          <option value="2" selected>Tinggi — tajam buat dibaca &amp; dicetak</option>
+          <option value="3">Maksimal — paling tajam, proses lebih lama</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="pagegrid" id="gridPdfFoto"></div>
+
+    <div class="actions">
+      <button class="btn primary" id="btnPdfFoto" type="button" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        Ubah Semua Halaman jadi Foto
+      </button>
+      <button class="btn" id="btnPdfFotoZip" type="button" disabled>Unduh Semua (ZIP)</button>
+    </div>
+    <progress id="progPdfFoto" max="100" value="0"></progress>
+    <div class="status" id="statusPdfFoto" role="status"></div>
+  </section>
+
+  <!-- ============ ATUR HALAMAN PDF PANEL ============ -->
+  <section class="panel" id="panelAtur" role="tabpanel" aria-labelledby="tabAtur" hidden>
+    <h2>Putar, Hapus &amp; Urutkan Halaman PDF</h2>
+    <p class="sub">Pilih satu berkas PDF, lalu putar halaman yang miring, hapus halaman yang tidak perlu, dan geser urutannya. Hasilnya disimpan sebagai PDF baru — berkas aslimu tidak berubah.</p>
+
+    <div class="drop" id="dropAtur">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>
+      <p>Tarik &amp; letakkan berkas PDF di sini</p>
+      <small>atau pakai tombol di bawah — berkas tidak diunggah ke mana pun</small>
+      <div class="pick"><input type="file" class="fileinput" id="fileAtur" aria-label="Pilih berkas PDF untuk diatur halamannya" accept=".pdf,application/pdf" /></div>
+    </div>
+
+    <div class="filechip" id="chipAtur">
+      <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+      <div class="meta"><b id="chipAturName">—</b><small id="chipAturSize">—</small></div>
+      <button class="icon-btn" id="chipAturRemove" type="button" aria-label="Hapus berkas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="pagegrid" id="gridAtur"></div>
+    <div class="empty-note" id="aturSummary"></div>
+
+    <div class="actions">
+      <button class="btn primary" id="btnAtur" type="button" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+        Simpan &amp; Unduh PDF Baru
+      </button>
+      <button class="btn" id="btnAturReset" type="button" disabled>Ulangi dari Awal</button>
+    </div>
+    <progress id="progAtur" max="100" value="0"></progress>
+    <div class="status" id="statusAtur" role="status"></div>
+  </section>
+
+  <!-- ============ KECILKAN FOTO PANEL ============ -->
+  <section class="panel" id="panelKompres" role="tabpanel" aria-labelledby="tabKompres" hidden>
+    <h2>Kecilkan Foto ke Ukuran Pas</h2>
+    <p class="sub">Pilih satu atau beberapa foto, tentukan ukuran maksimumnya, lalu alat ini otomatis menurunkan kualitas — dan resolusi bila perlu — sampai hasil di bawah target. Pas buat unggah berkas kuliah, lamaran, dan pendaftaran yang batas ukurannya ketat.</p>
+
+    <div class="drop" id="dropKompres">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <p>Tarik &amp; letakkan foto di sini</p>
+      <small>bisa banyak sekaligus (JPG, PNG, WebP) — foto tidak diunggah ke mana pun</small>
+      <div class="pick"><input type="file" class="fileinput" id="fileKompres" aria-label="Pilih foto untuk dikecilkan" accept="image/*" multiple /></div>
+    </div>
+
+    <div class="grid" id="gridKompres"></div>
+
+    <div class="opts">
+      <div class="full">
+        <label>Ukuran maksimum hasil</label>
+        <div class="quality-presets" role="group" aria-label="Pilihan cepat ukuran maksimum" id="targetPresets">
+          <button type="button" data-kb="100">100 KB</button>
+          <button type="button" data-kb="200" aria-pressed="true">200 KB</button>
+          <button type="button" data-kb="500">500 KB</button>
+          <button type="button" data-kb="1024">1 MB</button>
+        </div>
+        <div class="target-row">
+          <input type="number" class="target-input" id="optTargetKb" min="20" max="10240" step="10" value="200" inputmode="numeric" aria-label="Ukuran maksimum dalam KB" />
+          <span class="target-unit">KB maks. per foto</span>
+        </div>
+        <div class="hint">Isi bebas juga bisa — misalnya 150 atau 300. Hasil disimpan sebagai JPG; foto yang sudah lebih kecil dari target tetap diproses supaya pasti di bawah batas, dengan kualitas setinggi mungkin.</div>
+      </div>
+    </div>
+
+    <div class="pagegrid" id="gridKompresHasil"></div>
+
+    <div class="actions">
+      <button class="btn primary" id="btnKompres" type="button" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M16 21v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
+        Kecilkan Sekarang
+      </button>
+      <button class="btn" id="btnKompresZip" type="button" disabled>Unduh Semua (ZIP)</button>
+      <button class="btn" id="btnKompresClear" type="button" disabled>Hapus semua</button>
+    </div>
+    <progress id="progKompres" max="100" value="0"></progress>
+    <div class="status" id="statusKompres" role="status"></div>
+  </section>
+
+  <div class="note">
+    <b>Catatan hasil:</b> dokumen Word ditampilkan mengikuti tata letak aslinya lalu dirender per halaman pada resolusi tinggi supaya teks &amp; gambar tajam. Untuk dokumen yang rumit banget (text box bertumpuk, efek WordArt), hasil bisa tetap sedikit berbeda dari Microsoft Word. Gabung PDF serta putar/hapus halaman menyalin halaman apa adanya tanpa merender ulang, jadi kualitas PDF aslinya tetap utuh. Kecilkan Foto menyimpan hasil sebagai JPG — foto PNG dengan latar transparan akan diberi latar putih.
+  </div>
+
+  <footer>
+    <div><img class="foot-avatar" src="data:image/webp;base64,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" alt="" />PDFCrate — dibuat oleh Akari</div>
+    <div>PDFCrate — alat PDF gratis, 100% berjalan di browser.</div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Pustaka berat dimuat seperlunya saja ----------
+     Halaman awal tetap ringan; docx-preview / html2canvas / jsPDF baru
+     diunduh saat fitur yang membutuhkannya dipakai pertama kali.
+     Penampil Word memakai docx-preview (bukan ekstraksi teks): ia
+     me-render struktur, gaya, tabel, dan posisi gambar .docx seperti
+     aslinya, satu elemen section per halaman dokumen. */
+  var LIBS = {
+    jszip: "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js",
+    docx: "https://cdn.jsdelivr.net/npm/docx-preview@0.3.2/dist/docx-preview.min.js",
+    html2canvas: "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
+    jspdf: "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+    pdflib: "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js",
+    pdfjs: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+  };
+  var PDFJS_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  function loadPdfJs(){
+    return loadLib("pdfjs").then(function(){
+      if (window.pdfjsLib && !window.pdfjsLib.GlobalWorkerOptions.workerSrc){
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+      }
+    });
+  }
+  function downloadBlob(blob, filename){
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 800);
+  }
+  var libPromises = {};
+  function loadLib(name){
+    if (!libPromises[name]){
+      libPromises[name] = new Promise(function(resolve, reject){
+        var s = document.createElement("script");
+        s.src = LIBS[name];
+        s.onload = function(){ resolve(); };
+        s.onerror = function(){ reject(new Error("Gagal memuat " + name)); };
+        document.head.appendChild(s);
+      });
+    }
+    return libPromises[name];
+  }
+
+  /* ---------- Tema gelap / terang ---------- */
+  var root = document.documentElement;
+  function systemTheme(){
+    return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  root.setAttribute("data-theme", systemTheme());
+  document.getElementById("themeBtn").addEventListener("click", function(){
+    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+  });
+
+  /* ---------- Menu fitur (tombol garis tiga) ---------- */
+  var TAB_DEFS = [
+    { key: "word",   tab: document.getElementById("tabWord"),   panel: document.getElementById("panelWord") },
+    { key: "foto",   tab: document.getElementById("tabFoto"),   panel: document.getElementById("panelFoto") },
+    { key: "gabung", tab: document.getElementById("tabGabung"), panel: document.getElementById("panelGabung") },
+    { key: "pdffoto",tab: document.getElementById("tabPdfFoto"),panel: document.getElementById("panelPdfFoto") },
+    { key: "atur",   tab: document.getElementById("tabAtur"),   panel: document.getElementById("panelAtur") },
+    { key: "kompres",tab: document.getElementById("tabKompres"),panel: document.getElementById("panelKompres") }
+  ];
+  function showTab(which){
+    TAB_DEFS.forEach(function(d){
+      var on = d.key === which;
+      d.tab.setAttribute("aria-checked", on ? "true" : "false");
+      d.panel.hidden = !on;
+    });
+  }
+  var menuBtn = document.getElementById("menuBtn");
+  var fiturMenu = document.getElementById("fiturMenu");
+  function setMenu(open){
+    fiturMenu.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  menuBtn.addEventListener("click", function(e){
+    e.stopPropagation();
+    setMenu(!fiturMenu.classList.contains("open"));
+  });
+  fiturMenu.addEventListener("click", function(e){ e.stopPropagation(); });
+  document.addEventListener("click", function(){ setMenu(false); });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape") setMenu(false);
+  });
+  TAB_DEFS.forEach(function(d){
+    d.tab.addEventListener("click", function(){
+      showTab(d.key);
+      setMenu(false);
+      menuBtn.focus();
+    });
+  });
+
+  function fmtSize(bytes){
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + " KB";
+    return (bytes/(1024*1024)).toFixed(2) + " MB";
+  }
+  function baseName(name){ return name.replace(/\.[^.]+$/, "") || "dokumen"; }
+  function setStatus(el, msg, cls){
+    el.textContent = msg || "";
+    el.className = "status" + (cls ? " " + cls : "");
+  }
+  function wireDrop(zone, input){
+    ["dragenter","dragover"].forEach(function(ev){ zone.addEventListener(ev, function(e){ e.preventDefault(); zone.classList.add("drag"); }); });
+    ["dragleave","drop"].forEach(function(ev){ zone.addEventListener(ev, function(e){ e.preventDefault(); zone.classList.remove("drag"); }); });
+    zone.addEventListener("drop", function(e){
+      var files = e.dataTransfer && e.dataTransfer.files;
+      if (files && files.length){ input.files = files; input.dispatchEvent(new Event("change")); }
+    });
+  }
+
+  /* ================= WORD ================= */
+  var fileWord = document.getElementById("fileWord");
+  var chipWord = document.getElementById("chipWord");
+  var chipWordName = document.getElementById("chipWordName");
+  var chipWordSize = document.getElementById("chipWordSize");
+  var btnWord = document.getElementById("btnWord");
+  var statusWord = document.getElementById("statusWord");
+  var progWord = document.getElementById("progWord");
+  var previewWrap = document.getElementById("previewWrap");
+  var docPreview = document.getElementById("docPreview");
+  var currentDocx = null;
+
+  wireDrop(document.getElementById("dropWord"), fileWord);
+
+  fileWord.addEventListener("change", function(){
+    var f = fileWord.files && fileWord.files[0];
+    if (!f) return;
+    if (!/\.docx$/i.test(f.name)){
+      currentDocx = null; chipWord.classList.remove("show"); previewWrap.classList.remove("show");
+      btnWord.disabled = true;
+      setStatus(statusWord, "Berkas ini bukan .docx. PDFCrate hanya mendukung format Word modern (.docx) — format .doc lama belum bisa.", "err");
+      return;
+    }
+    currentDocx = f;
+    chipWordName.textContent = f.name;
+    chipWordSize.textContent = fmtSize(f.size);
+    chipWord.classList.add("show");
+    btnWord.disabled = true;
+    setStatus(statusWord, "Membaca dokumen…");
+    loadLib("jszip").then(function(){ return loadLib("docx"); }).then(function(){
+    var reader = new FileReader();
+    reader.onload = function(){
+      docPreview.innerHTML = "";
+      window.docx.renderAsync(reader.result, docPreview, null, {
+        className: "docx",
+        inWrapper: true,
+        breakPages: true,
+        renderHeaders: true,
+        renderFooters: true,
+        renderFootnotes: true,
+        useBase64URL: true
+      }).then(function(){
+        var pages = docPreview.querySelectorAll("section.docx").length;
+        if (!pages){
+          setStatus(statusWord, "Dokumen terbaca tapi tidak ada halaman yang bisa ditampilkan.", "err");
+          return;
+        }
+        previewWrap.classList.add("show");
+        btnWord.disabled = false;
+        setStatus(statusWord, "Dokumen siap — " + pages + " halaman, tampil persis seperti tata letak aslinya. Klik “Buat & Unduh PDF” untuk mengunduh.", "ok");
+      }).catch(function(err){
+        setStatus(statusWord, "Gagal membaca dokumen ini: " + (err && err.message ? err.message : err), "err");
+      });
+    };
+    reader.onerror = function(){ setStatus(statusWord, "Gagal membaca berkas dari perangkat.", "err"); };
+    reader.readAsArrayBuffer(f);
+    }).catch(function(){
+      setStatus(statusWord, "Pustaka pembaca Word gagal dimuat. Periksa koneksi internet lalu coba lagi.", "err");
+    });
+  });
+
+  document.getElementById("chipWordRemove").addEventListener("click", function(){
+    currentDocx = null; fileWord.value = "";
+    chipWord.classList.remove("show"); previewWrap.classList.remove("show");
+    docPreview.innerHTML = ""; btnWord.disabled = true;
+    progWord.classList.remove("show"); progWord.value = 0;
+    setStatus(statusWord, "");
+  });
+
+  btnWord.addEventListener("click", function(){
+    if (!currentDocx) return;
+    var sections = Array.prototype.slice.call(docPreview.querySelectorAll("section.docx"));
+    if (!sections.length){
+      setStatus(statusWord, "Belum ada halaman dokumen yang bisa dibuat PDF. Muat ulang berkasnya dulu.", "err");
+      return;
+    }
+    btnWord.disabled = true;
+    progWord.classList.add("show"); progWord.value = 8;
+    setStatus(statusWord, "Memuat pustaka PDF (sekali saja)…");
+    Promise.all([loadLib("html2canvas"), loadLib("jspdf")]).then(function(){
+      /* Render per halaman dokumen, bukan satu gambar panjang yang dipotong
+         buta: tiap section.docx dirender utuh pada skala 3 (±300 dpi) lalu
+         jadi satu halaman PDF berukuran persis halaman aslinya, jadi tidak
+         ada teks terpotong di tengah baris dan gambar tetap tajam. */
+      docPreview.classList.add("capturing");
+      var jsPDF = window.jspdf.jsPDF;
+      var pdf = null;
+      var chain = Promise.resolve();
+      sections.forEach(function(sec, idx){
+        chain = chain.then(function(){
+          progWord.value = 15 + Math.round(80 * idx / sections.length);
+          setStatus(statusWord, "Merender halaman " + (idx + 1) + " dari " + sections.length + "…");
+          return html2canvas(sec, { scale: 3, useCORS: true, backgroundColor: "#ffffff", logging: false }).then(function(canvas){
+            var wMm = canvas.width / 3 * 25.4 / 96;
+            var hMm = canvas.height / 3 * 25.4 / 96;
+            var orient = wMm > hMm ? "landscape" : "portrait";
+            var img = canvas.toDataURL("image/jpeg", 0.95);
+            if (!pdf) pdf = new jsPDF({ unit: "mm", format: [wMm, hMm], orientation: orient });
+            else pdf.addPage([wMm, hMm], orient);
+            pdf.addImage(img, "JPEG", 0, 0, wMm, hMm);
+          });
+        });
+      });
+      return chain.then(function(){
+        pdf.save(baseName(currentDocx.name) + ".pdf");
+        progWord.value = 100;
+        setStatus(statusWord, "Selesai — PDF " + sections.length + " halaman sudah diunduh. Cek folder unduhanmu.", "ok");
+      });
+    }).catch(function(err){
+      if (!window.jspdf || typeof html2canvas !== "function"){
+        setStatus(statusWord, "Pustaka PDF gagal dimuat. Periksa koneksi internet lalu coba lagi.", "err");
+      } else {
+        setStatus(statusWord, "Gagal membuat PDF: " + (err && err.message ? err.message : err), "err");
+      }
+    }).finally(function(){
+      docPreview.classList.remove("capturing");
+      btnWord.disabled = false;
+      setTimeout(function(){ progWord.classList.remove("show"); progWord.value = 0; }, 1200);
+    });
+  });
+
+  /* ================= FOTO ================= */
+  var fileFoto = document.getElementById("fileFoto");
+  var gridFoto = document.getElementById("gridFoto");
+  var btnFoto = document.getElementById("btnFoto");
+  var btnFotoClear = document.getElementById("btnFotoClear");
+  var statusFoto = document.getElementById("statusFoto");
+  var progFoto = document.getElementById("progFoto");
+  var photos = []; // {name, url, w, h, rot}
+
+  wireDrop(document.getElementById("dropFoto"), fileFoto);
+
+  var ICO = {
+    left: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+    right: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
+    rot: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg>',
+    del: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>'
+  };
+
+  function renderGrid(){
+    gridFoto.innerHTML = "";
+    photos.forEach(function(p, i){
+      var card = document.createElement("div"); card.className = "thumb";
+      var box = document.createElement("div"); box.className = "imgbox";
+      var img = document.createElement("img");
+      img.src = p.url; img.alt = p.name;
+      img.style.transform = "rotate(" + p.rot + "deg)" + ((p.rot % 180 !== 0) ? " scale(0.72)" : "");
+      box.appendChild(img);
+      var num = document.createElement("span"); num.className = "num"; num.textContent = (i+1) + " · " + p.name.slice(0, 14);
+      var tools = document.createElement("div"); tools.className = "tools";
+      function mk(html, label, fn, cls){
+        var b = document.createElement("button"); b.type = "button"; b.innerHTML = html;
+        b.setAttribute("aria-label", label); if (cls) b.className = cls;
+        b.addEventListener("click", fn); return b;
+      }
+      tools.appendChild(mk(ICO.left, "Geser ke depan", function(){ if (i > 0){ var t = photos[i-1]; photos[i-1] = photos[i]; photos[i] = t; renderGrid(); } }));
+      tools.appendChild(mk(ICO.right, "Geser ke belakang", function(){ if (i < photos.length-1){ var t = photos[i+1]; photos[i+1] = photos[i]; photos[i] = t; renderGrid(); } }));
+      tools.appendChild(mk(ICO.rot, "Putar 90 derajat", function(){ p.rot = (p.rot + 90) % 360; renderGrid(); }));
+      tools.appendChild(mk(ICO.del, "Hapus foto", function(){ photos.splice(i, 1); renderGrid(); syncFotoButtons(); }, "del"));
+      card.appendChild(box); card.appendChild(num); card.appendChild(tools);
+      gridFoto.appendChild(card);
+    });
+  }
+  function syncFotoButtons(){
+    btnFoto.disabled = photos.length === 0;
+    btnFotoClear.disabled = photos.length === 0;
+    updateSizeHint();
+  }
+
+  /* ---------- Kualitas foto ----------
+     Dua tuas yang menentukan hasil akhir: kualitas JPEG (penggeser /
+     pilihan cepat) dan resolusi maksimum (foto diperkecil sebelum
+     masuk PDF). Keduanya dibaca ulang setiap kali PDF dibuat, jadi
+     mengubahnya tidak perlu memuat ulang foto. */
+  var optQuality = document.getElementById("optQuality");
+  var qualityValue = document.getElementById("qualityValue");
+  var qualityHint = document.getElementById("qualityHint");
+  var optResolusi = document.getElementById("optResolusi");
+  var sizeHint = document.getElementById("sizeHint");
+  var presetBtns = Array.prototype.slice.call(document.querySelectorAll(".quality-presets button"));
+
+  function qualityLabel(q){
+    if (q >= 97) return "Maksimal";
+    if (q >= 85) return "Tinggi";
+    if (q >= 70) return "Seimbang";
+    if (q >= 55) return "Sedang";
+    return "Hemat";
+  }
+  function qualitySettings(){
+    return {
+      q: parseInt(optQuality.value, 10) / 100,
+      pct: parseInt(optQuality.value, 10),
+      maxDim: parseInt(optResolusi.value, 10) || 0
+    };
+  }
+  function refreshQualityUI(){
+    var s = qualitySettings();
+    qualityValue.textContent = s.pct + "% · " + qualityLabel(s.pct);
+    presetBtns.forEach(function(b){
+      b.setAttribute("aria-pressed", parseInt(b.getAttribute("data-quality"), 10) === s.pct ? "true" : "false");
+    });
+    if (s.pct >= 97) qualityHint.textContent = "Kualitas maksimal: paling tajam dan paling dekat ke foto asli — ukuran PDF juga paling besar.";
+    else if (s.pct >= 85) qualityHint.textContent = "Kualitas tinggi: gambar tajam seperti aslinya, ukuran PDF lebih besar. Turunkan kalau PDF-nya mau dikirim lewat WA atau email.";
+    else if (s.pct >= 70) qualityHint.textContent = "Kualitas seimbang: tetap enak dilihat di layar dan dicetak biasa, ukuran PDF jauh lebih kecil.";
+    else if (s.pct >= 55) qualityHint.textContent = "Kualitas sedang: cukup buat dilihat di HP dan dikirim cepat; detail halus mulai berkurang.";
+    else qualityHint.textContent = "Kualitas hemat: ukuran PDF paling kecil, gambar terlihat lebih lembut — cocok buat arsip cepat atau kirim lewat koneksi lambat.";
+    updateSizeHint();
+  }
+  function updateSizeHint(){
+    if (!sizeHint) return;
+    if (!photos.length){
+      sizeHint.textContent = "Pilih foto dulu — perkiraan ukuran PDF muncul di sini, ukuran pastinya tampil setelah PDF dibuat.";
+      return;
+    }
+    var s = qualitySettings();
+    var totalOrig = 0;
+    photos.forEach(function(p){ totalOrig += p.size || 0; });
+    /* Perkiraan kasar saja: JPEG pada kualitas q menyimpan kira-kira
+       q^1.6 dari ukuran berkas aslinya, dan memperkecil resolusi
+       mengecilkan piksel sebanding kuadrat skalanya. Angka pastinya
+       bergantung isi foto, jadi ditampilkan sebagai rentang. */
+    var factor = Math.pow(s.q, 1.6);
+    var est = 0;
+    photos.forEach(function(p){
+      var outW = (p.rot % 180 !== 0) ? p.h : p.w;
+      var outH = (p.rot % 180 !== 0) ? p.w : p.h;
+      var sc = 1;
+      if (s.maxDim > 0 && Math.max(outW, outH) > s.maxDim) sc = s.maxDim / Math.max(outW, outH);
+      est += (p.size || 0) * factor * sc * sc;
+    });
+    est += photos.length * 2048; /* overhead struktur PDF per halaman */
+    var resText = s.maxDim > 0 ? "resolusi maks. " + s.maxDim + " px" : "resolusi asli";
+    sizeHint.textContent = photos.length + " foto · total asli " + fmtSize(totalOrig) + " · perkiraan PDF ± " + fmtSize(Math.round(est * 0.7)) + "–" + fmtSize(Math.round(est * 1.3)) + " (kualitas " + s.pct + "%, " + resText + ").";
+  }
+  optQuality.addEventListener("input", refreshQualityUI);
+  presetBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      optQuality.value = b.getAttribute("data-quality");
+      refreshQualityUI();
+    });
+  });
+  optResolusi.addEventListener("change", updateSizeHint);
+  refreshQualityUI();
+
+  fileFoto.addEventListener("change", function(){
+    var files = Array.prototype.slice.call(fileFoto.files || []);
+    fileFoto.value = "";
+    if (!files.length) return;
+    var pending = files.length, failed = 0;
+    setStatus(statusFoto, "Memuat foto…");
+    files.forEach(function(f){
+      if (!/^image\//.test(f.type)){ failed++; if (--pending === 0) doneLoad(); return; }
+      var reader = new FileReader();
+      reader.onload = function(){
+        var img = new Image();
+        img.onload = function(){
+          photos.push({ name: f.name, url: reader.result, w: img.naturalWidth, h: img.naturalHeight, rot: 0, size: f.size || 0 });
+          if (--pending === 0) doneLoad();
+        };
+        img.onerror = function(){ failed++; if (--pending === 0) doneLoad(); };
+        img.src = reader.result;
+      };
+      reader.onerror = function(){ failed++; if (--pending === 0) doneLoad(); };
+      reader.readAsDataURL(f);
+    });
+    function doneLoad(){
+      renderGrid(); syncFotoButtons();
+      if (photos.length) setStatus(statusFoto, photos.length + " foto siap. Atur urutannya kalau perlu, lalu klik “Buat & Unduh PDF”." + (failed ? " " + failed + " berkas dilewati karena bukan foto yang bisa dibaca." : ""), "ok");
+      else setStatus(statusFoto, "Tidak ada foto yang bisa dibaca dari pilihan itu.", "err");
+    }
+  });
+
+  btnFotoClear.addEventListener("click", function(){
+    photos = []; renderGrid(); syncFotoButtons(); setStatus(statusFoto, "");
+  });
+
+  function rotatedDataURL(p, quality, maxDim){
+    return new Promise(function(resolve, reject){
+      var img = new Image();
+      img.onload = function(){
+        var swap = (p.rot % 180 !== 0);
+        var srcW = img.naturalWidth, srcH = img.naturalHeight;
+        var outW = swap ? srcH : srcW;
+        var outH = swap ? srcW : srcH;
+        /* Perkecil dulu kalau sisi terpanjang melewati resolusi maksimum
+           yang dipilih — piksel yang dibuang di sini yang paling banyak
+           mengecilkan ukuran PDF. */
+        var scale = 1;
+        if (maxDim > 0 && Math.max(outW, outH) > maxDim) scale = maxDim / Math.max(outW, outH);
+        var c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(outW * scale));
+        c.height = Math.max(1, Math.round(outH * scale));
+        var ctx = c.getContext("2d");
+        ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.translate(c.width/2, c.height/2);
+        ctx.rotate(p.rot * Math.PI / 180);
+        ctx.drawImage(img, -srcW * scale / 2, -srcH * scale / 2, srcW * scale, srcH * scale);
+        resolve({ url: c.toDataURL("image/jpeg", quality), w: c.width, h: c.height });
+      };
+      img.onerror = reject;
+      img.src = p.url;
+    });
+  }
+
+  btnFoto.addEventListener("click", function(){
+    if (!photos.length) return;
+    btnFoto.disabled = true; btnFotoClear.disabled = true;
+    setStatus(statusFoto, "Memuat pustaka PDF (sekali saja)…");
+    loadLib("jspdf").then(function(){ makeFotoPdf(); }).catch(function(){
+      syncFotoButtons();
+      setStatus(statusFoto, "Pustaka PDF gagal dimuat. Periksa koneksi internet lalu coba lagi.", "err");
+    });
+  });
+
+  function makeFotoPdf(){
+    btnFoto.disabled = true; btnFotoClear.disabled = true;
+    progFoto.classList.add("show"); progFoto.value = 5;
+    setStatus(statusFoto, "Menyiapkan foto…");
+    var jsPDF = window.jspdf.jsPDF;
+    var mode = document.getElementById("optPage").value;
+    var margin = parseFloat(document.getElementById("optMargin").value);
+    var ks = qualitySettings();
+    var pdf = null;
+
+    var chain = Promise.resolve();
+    photos.forEach(function(p, idx){
+      chain = chain.then(function(){
+        return rotatedDataURL(p, ks.q, ks.maxDim).then(function(r){
+          var pageW, pageH;
+          if (mode === "fit"){
+            pageW = Math.max(20, r.w * 25.4 / 96);
+            pageH = Math.max(20, r.h * 25.4 / 96);
+          } else if (mode === "letter"){
+            pageW = 215.9; pageH = 279.4;
+            if (r.w > r.h){ var t = pageW; pageW = pageH; pageH = t; }
+          } else {
+            pageW = 210; pageH = 297;
+            if (r.w > r.h){ var t2 = pageW; pageW = pageH; pageH = t2; }
+          }
+          var orient = pageW > pageH ? "landscape" : "portrait";
+          if (!pdf) pdf = new jsPDF({ unit: "mm", format: [pageW, pageH], orientation: orient });
+          else pdf.addPage([pageW, pageH], orient);
+          var m = (mode === "fit") ? 0 : margin;
+          var availW = pageW - m*2, availH = pageH - m*2;
+          var scale = Math.min(availW / r.w, availH / r.h);
+          var w = r.w * scale, h = r.h * scale;
+          pdf.addImage(r.url, "JPEG", m + (availW - w)/2, m + (availH - h)/2, w, h);
+          progFoto.value = 5 + Math.round(90 * (idx+1) / photos.length);
+          setStatus(statusFoto, "Memproses foto " + (idx+1) + " dari " + photos.length + "…");
+        });
+      });
+    });
+
+    chain.then(function(){
+      var pdfSize = 0;
+      try { pdfSize = pdf.output("blob").size; } catch (e) { pdfSize = 0; }
+      pdf.save("foto-pdfcrate.pdf");
+      progFoto.value = 100;
+      setStatus(statusFoto, "Selesai — PDF " + photos.length + " halaman" + (pdfSize ? " (" + fmtSize(pdfSize) + ")" : "") + " sudah diunduh sebagai foto-pdfcrate.pdf. Kualitas " + ks.pct + "% (" + qualityLabel(ks.pct) + "), " + (ks.maxDim > 0 ? "resolusi maks. " + ks.maxDim + " px" : "resolusi asli") + ". Kurang tajam atau berkasnya kegedean? Geser kualitasnya lalu buat lagi.", "ok");
+    }).catch(function(err){
+      setStatus(statusFoto, "Gagal membuat PDF: " + (err && err.message ? err.message : err), "err");
+    }).finally(function(){
+      syncFotoButtons();
+      setTimeout(function(){ progFoto.classList.remove("show"); progFoto.value = 0; }, 1200);
+    });
+  }
+
+  /* Ikon bersama untuk fitur PDF */
+  var ICO2 = {
+    up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>',
+    down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
+    left: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+    right: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
+    rotL: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.64-6.36M3 3v6h6"/></svg>',
+    rotR: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg>',
+    del: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>',
+    dl: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>',
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>'
+  };
+  function readAsArrayBuffer(file){
+    return new Promise(function(resolve, reject){
+      var r = new FileReader();
+      r.onload = function(){ resolve(r.result); };
+      r.onerror = reject;
+      r.readAsArrayBuffer(file);
+    });
+  }
+  function isPdfFile(f){ return /\.pdf$/i.test(f.name) || f.type === "application/pdf"; }
+
+  /* ================= GABUNG PDF =================
+     Halaman disalin apa adanya memakai pdf-lib — tidak dirender ulang,
+     jadi teks tetap bisa dipilih dan kualitasnya persis berkas asli. */
+  var fileGabung = document.getElementById("fileGabung");
+  var listGabung = document.getElementById("listGabung");
+  var btnGabung = document.getElementById("btnGabung");
+  var btnGabungClear = document.getElementById("btnGabungClear");
+  var statusGabung = document.getElementById("statusGabung");
+  var progGabung = document.getElementById("progGabung");
+  var mergeFiles = []; // {file, name, size, pages|null}
+
+  wireDrop(document.getElementById("dropGabung"), fileGabung);
+
+  function renderMergeList(){
+    listGabung.innerHTML = "";
+    mergeFiles.forEach(function(item, i){
+      var row = document.createElement("div"); row.className = "fileitem";
+      var fi = document.createElement("div"); fi.className = "fi"; fi.innerHTML = ICO2.doc;
+      var meta = document.createElement("div"); meta.className = "meta";
+      var b = document.createElement("b"); b.textContent = (i + 1) + ". " + item.name;
+      var sm = document.createElement("small");
+      sm.textContent = fmtSize(item.size) + (item.pages ? " · " + item.pages + " halaman" : " · halaman belum terbaca");
+      meta.appendChild(b); meta.appendChild(sm);
+      var tools = document.createElement("div"); tools.className = "tools";
+      function mk(html, label, fn, cls, disabled){
+        var btn = document.createElement("button"); btn.type = "button"; btn.innerHTML = html;
+        btn.setAttribute("aria-label", label); if (cls) btn.className = cls;
+        btn.disabled = !!disabled;
+        btn.addEventListener("click", fn); return btn;
+      }
+      tools.appendChild(mk(ICO2.up, "Naikkan urutan", function(){ if (i > 0){ var t = mergeFiles[i-1]; mergeFiles[i-1] = mergeFiles[i]; mergeFiles[i] = t; renderMergeList(); } }, "", i === 0));
+      tools.appendChild(mk(ICO2.down, "Turunkan urutan", function(){ if (i < mergeFiles.length - 1){ var t = mergeFiles[i+1]; mergeFiles[i+1] = mergeFiles[i]; mergeFiles[i] = t; renderMergeList(); } }, "", i === mergeFiles.length - 1));
+      tools.appendChild(mk(ICO2.del, "Keluarkan dari daftar", function(){ mergeFiles.splice(i, 1); renderMergeList(); syncMergeButtons(); }, "del"));
+      row.appendChild(fi); row.appendChild(meta); row.appendChild(tools);
+      listGabung.appendChild(row);
+    });
+  }
+  function syncMergeButtons(){
+    btnGabung.disabled = mergeFiles.length < 2;
+    btnGabungClear.disabled = mergeFiles.length === 0;
+  }
+
+  fileGabung.addEventListener("change", function(){
+    var files = Array.prototype.slice.call(fileGabung.files || []);
+    fileGabung.value = "";
+    if (!files.length) return;
+    var skipped = 0;
+    files.forEach(function(f){
+      if (!isPdfFile(f)){ skipped++; return; }
+      mergeFiles.push({ file: f, name: f.name, size: f.size || 0, pages: null });
+    });
+    renderMergeList(); syncMergeButtons();
+    if (!mergeFiles.length){
+      setStatus(statusGabung, "Tidak ada berkas PDF yang bisa dibaca dari pilihan itu.", "err");
+      return;
+    }
+    setStatus(statusGabung, "Menghitung halaman tiap berkas…");
+    loadLib("pdflib").then(function(){
+      var chain = Promise.resolve();
+      mergeFiles.forEach(function(item){
+        if (item.pages !== null) return;
+        chain = chain.then(function(){
+          return readAsArrayBuffer(item.file).then(function(buf){
+            return window.PDFLib.PDFDocument.load(buf, { ignoreEncryption: true });
+          }).then(function(doc){
+            item.pages = doc.getPageCount();
+          }).catch(function(){ item.pages = 0; });
+        });
+      });
+      return chain;
+    }).then(function(){
+      renderMergeList(); syncMergeButtons();
+      var total = mergeFiles.reduce(function(n, it){ return n + (it.pages || 0); }, 0);
+      setStatus(statusGabung, mergeFiles.length + " berkas siap digabung" + (total ? " — total " + total + " halaman" : "") + ". Butuh minimal 2 berkas." + (skipped ? " " + skipped + " berkas dilewati karena bukan PDF." : ""), mergeFiles.length >= 2 ? "ok" : "");
+    }).catch(function(){
+      setStatus(statusGabung, "Pustaka PDF gagal dimuat. Periksa koneksi internet lalu coba lagi.", "err");
+    });
+  });
+
+  btnGabungClear.addEventListener("click", function(){
+    mergeFiles = []; renderMergeList(); syncMergeButtons(); setStatus(statusGabung, "");
+  });
+
+  btnGabung.addEventListener("click", function(){
+    if (mergeFiles.length < 2) return;
+    btnGabung.disabled = true; btnGabungClear.disabled = true;
+    progGabung.classList.add("show"); progGabung.value = 5;
+    setStatus(statusGabung, "Memuat pustaka PDF (sekali saja)…");
+    loadLib("pdflib").then(function(){
+      var PDFLib = window.PDFLib;
+      return PDFLib.PDFDocument.create().then(function(merged){
+        var chain = Promise.resolve();
+        mergeFiles.forEach(function(item, idx){
+          chain = chain.then(function(){
+            progGabung.value = 10 + Math.round(80 * idx / mergeFiles.length);
+            setStatus(statusGabung, "Menggabungkan berkas " + (idx + 1) + " dari " + mergeFiles.length + " (" + item.name + ")…");
+            return readAsArrayBuffer(item.file).then(function(buf){
+              return PDFLib.PDFDocument.load(buf, { ignoreEncryption: true });
+            }).then(function(src){
+              return merged.copyPages(src, src.getPageIndices());
+            }).then(function(pages){
+              pages.forEach(function(pg){ merged.addPage(pg); });
+            });
+          });
+        });
+        return chain.then(function(){ return merged.save(); }).then(function(bytes){
+          downloadBlob(new Blob([bytes], { type: "application/pdf" }), "gabungan-pdfcrate.pdf");
+          progGabung.value = 100;
+          var total = mergeFiles.reduce(function(n, it){ return n + (it.pages || 0); }, 0);
+          setStatus(statusGabung, "Selesai — " + mergeFiles.length + " berkas jadi satu PDF" + (total ? " (" + total + " halaman)" : "") + ", sudah diunduh sebagai gabungan-pdfcrate.pdf.", "ok");
+        });
+      });
+    }).catch(function(err){
+      var msg = (err && err.message) ? err.message : String(err);
+      if (/encrypt/i.test(msg)) setStatus(statusGabung, "Salah satu berkas PDF terkunci / terenkripsi, jadi tidak bisa digabung. Buka kuncinya dulu di aplikasi lain, lalu coba lagi.", "err");
+      else setStatus(statusGabung, "Gagal menggabungkan PDF: " + msg, "err");
+    }).finally(function(){
+      syncMergeButtons();
+      setTimeout(function(){ progGabung.classList.remove("show"); progGabung.value = 0; }, 1200);
+    });
+  });
+
+  /* ================= PDF JADI FOTO =================
+     Halaman dirender memakai pdf.js ke canvas pada skala yang dipilih,
+     lalu disimpan sebagai JPG/PNG. Hasil per halaman tampil sebagai
+     kartu: bisa diunduh satu-satu atau semua sekaligus dalam ZIP. */
+  var filePdfFoto = document.getElementById("filePdfFoto");
+  var chipPdfFoto = document.getElementById("chipPdfFoto");
+  var chipPdfFotoName = document.getElementById("chipPdfFotoName");
+  var chipPdfFotoSize = document.getElementById("chipPdfFotoSize");
+  var gridPdfFoto = document.getElementById("gridPdfFoto");
+  var btnPdfFoto = document.getElementById("btnPdfFoto");
+  var btnPdfFotoZip = document.getElementById("btnPdfFotoZip");
+  var statusPdfFoto = document.getElementById("statusPdfFoto");
+  var progPdfFoto = document.getElementById("progPdfFoto");
+  var pdfFotoFile = null;
+  var pdfFotoResults = []; // {name, url, blob}
+
+  wireDrop(document.getElementById("dropPdfFoto"), filePdfFoto);
+
+  function clearPdfFotoResults(){
+    pdfFotoResults = [];
+    gridPdfFoto.innerHTML = "";
+    btnPdfFotoZip.disabled = true;
+  }
+  filePdfFoto.addEventListener("change", function(){
+    var f = filePdfFoto.files && filePdfFoto.files[0];
+    if (!f) return;
+    clearPdfFotoResults();
+    if (!isPdfFile(f)){
+      pdfFotoFile = null; chipPdfFoto.classList.remove("show"); btnPdfFoto.disabled = true;
+      setStatus(statusPdfFoto, "Berkas ini bukan PDF. Pilih berkas berekstensi .pdf ya.", "err");
+      return;
+    }
+    pdfFotoFile = f;
+    chipPdfFotoName.textContent = f.name;
+    chipPdfFotoSize.textContent = fmtSize(f.size);
+    chipPdfFoto.classList.add("show");
+    btnPdfFoto.disabled = false;
+    setStatus(statusPdfFoto, "PDF siap. Pilih format & ketajaman, lalu klik “Ubah Semua Halaman jadi Foto”.", "ok");
+  });
+  document.getElementById("chipPdfFotoRemove").addEventListener("click", function(){
+    pdfFotoFile = null; filePdfFoto.value = "";
+    chipPdfFoto.classList.remove("show"); btnPdfFoto.disabled = true;
+    clearPdfFotoResults(); setStatus(statusPdfFoto, "");
+    progPdfFoto.classList.remove("show"); progPdfFoto.value = 0;
+  });
+
+  function renderPdfFotoCards(){
+    gridPdfFoto.innerHTML = "";
+    pdfFotoResults.forEach(function(r){
+      var card = document.createElement("div"); card.className = "pagecard";
+      var box = document.createElement("div"); box.className = "imgbox";
+      var img = document.createElement("img"); img.src = r.url; img.alt = r.name;
+      box.appendChild(img);
+      var num = document.createElement("span"); num.className = "num"; num.textContent = r.name;
+      var tools = document.createElement("div"); tools.className = "tools";
+      var a = document.createElement("a");
+      a.href = r.url; a.download = r.name; a.innerHTML = ICO2.dl;
+      a.setAttribute("aria-label", "Unduh " + r.name);
+      tools.appendChild(a);
+      card.appendChild(box); card.appendChild(num); card.appendChild(tools);
+      gridPdfFoto.appendChild(card);
+    });
+    btnPdfFotoZip.disabled = pdfFotoResults.length === 0;
+  }
+
+  btnPdfFoto.addEventListener("click", function(){
+    if (!pdfFotoFile) return;
+    btnPdfFoto.disabled = true; btnPdfFotoZip.disabled = true;
+    clearPdfFotoResults();
+    progPdfFoto.classList.add("show"); progPdfFoto.value = 5;
+    setStatus(statusPdfFoto, "Memuat pustaka pembaca PDF (sekali saja)…");
+    loadPdfJs().then(function(){
+      return readAsArrayBuffer(pdfFotoFile);
+    }).then(function(buf){
+      return window.pdfjsLib.getDocument({ data: buf }).promise;
+    }).then(function(pdfDoc){
+      var total = pdfDoc.numPages;
+      var format = document.getElementById("optPdfFotoFormat").value;
+      var scale = parseFloat(document.getElementById("optPdfFotoScale").value) || 2;
+      var ext = format === "png" ? "png" : "jpg";
+      var mime = format === "png" ? "image/png" : "image/jpeg";
+      var stem = baseName(pdfFotoFile.name);
+      var chain = Promise.resolve();
+      for (var p = 1; p <= total; p++){
+        (function(pageNo){
+          chain = chain.then(function(){
+            progPdfFoto.value = 5 + Math.round(90 * (pageNo - 1) / total);
+            setStatus(statusPdfFoto, "Merender halaman " + pageNo + " dari " + total + "…");
+            return pdfDoc.getPage(pageNo).then(function(page){
+              var viewport = page.getViewport({ scale: scale });
+              var canvas = document.createElement("canvas");
+              canvas.width = Math.round(viewport.width);
+              canvas.height = Math.round(viewport.height);
+              var ctx = canvas.getContext("2d");
+              ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+              return page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function(){
+                return new Promise(function(resolve){
+                  canvas.toBlob(function(blob){
+                    var name = stem + "-hal-" + (pageNo < 10 ? "0" : "") + pageNo + "." + ext;
+                    pdfFotoResults.push({ name: name, url: URL.createObjectURL(blob), blob: blob });
+                    resolve();
+                  }, mime, 0.92);
+                });
+              });
+            });
+          });
+        })(p);
+      }
+      return chain.then(function(){ return total; });
+    }).then(function(total){
+      renderPdfFotoCards();
+      progPdfFoto.value = 100;
+      setStatus(statusPdfFoto, "Selesai — " + total + " halaman jadi foto. Unduh satu-satu lewat tombol di tiap kartu, atau semuanya sekaligus pakai tombol ZIP.", "ok");
+    }).catch(function(err){
+      var msg = (err && err.message) ? err.message : String(err);
+      if (/password/i.test(msg)) setStatus(statusPdfFoto, "PDF ini dilindungi kata sandi, jadi halamannya tidak bisa dibuka. Lepas kata sandinya dulu, lalu coba lagi.", "err");
+      else setStatus(statusPdfFoto, "Gagal mengubah PDF jadi foto: " + msg, "err");
+    }).finally(function(){
+      btnPdfFoto.disabled = !pdfFotoFile;
+      btnPdfFotoZip.disabled = pdfFotoResults.length === 0;
+      setTimeout(function(){ progPdfFoto.classList.remove("show"); progPdfFoto.value = 0; }, 1200);
+    });
+  });
+
+  btnPdfFotoZip.addEventListener("click", function(){
+    if (!pdfFotoResults.length) return;
+    btnPdfFotoZip.disabled = true;
+    setStatus(statusPdfFoto, "Menyiapkan ZIP…");
+    loadLib("jszip").then(function(){
+      var zip = new window.JSZip();
+      pdfFotoResults.forEach(function(r){ zip.file(r.name, r.blob); });
+      return zip.generateAsync({ type: "blob" });
+    }).then(function(blob){
+      downloadBlob(blob, baseName(pdfFotoFile ? pdfFotoFile.name : "pdf") + "-foto.zip");
+      setStatus(statusPdfFoto, "ZIP berisi " + pdfFotoResults.length + " foto sudah diunduh.", "ok");
+    }).catch(function(err){
+      setStatus(statusPdfFoto, "Gagal membuat ZIP: " + ((err && err.message) ? err.message : err), "err");
+    }).finally(function(){
+      btnPdfFotoZip.disabled = pdfFotoResults.length === 0;
+    });
+  });
+
+  /* ================= ATUR HALAMAN PDF =================
+     Pratinjau halaman dirender kecil memakai pdf.js. Urutan, putaran,
+     dan halaman terhapus disimpan sebagai daftar kerja; saat disimpan,
+     pdf-lib menyalin halaman terpilih sesuai urutan & putaran baru —
+     isi halaman tidak dirender ulang, kualitasnya utuh. */
+  var fileAtur = document.getElementById("fileAtur");
+  var chipAtur = document.getElementById("chipAtur");
+  var chipAturName = document.getElementById("chipAturName");
+  var chipAturSize = document.getElementById("chipAturSize");
+  var gridAtur = document.getElementById("gridAtur");
+  var aturSummary = document.getElementById("aturSummary");
+  var btnAtur = document.getElementById("btnAtur");
+  var btnAturReset = document.getElementById("btnAturReset");
+  var statusAtur = document.getElementById("statusAtur");
+  var progAtur = document.getElementById("progAtur");
+  var aturFile = null;
+  var aturPages = []; // {src: indeks halaman asli (0-based), rot: tambahan putaran 0/90/180/270, thumb: objectURL}
+
+  wireDrop(document.getElementById("dropAtur"), fileAtur);
+
+  function renderAturGrid(){
+    gridAtur.innerHTML = "";
+    aturPages.forEach(function(pg, i){
+      var card = document.createElement("div"); card.className = "pagecard";
+      var box = document.createElement("div"); box.className = "imgbox";
+      var img = document.createElement("img");
+      img.src = pg.thumb; img.alt = "Halaman asli " + (pg.src + 1);
+      img.style.transform = "rotate(" + pg.rot + "deg)" + ((pg.rot % 180 !== 0) ? " scale(0.78)" : "");
+      box.appendChild(img);
+      var num = document.createElement("span"); num.className = "num";
+      num.textContent = "Baru " + (i + 1) + " · asli " + (pg.src + 1) + (pg.rot ? " · ↻ " + pg.rot + "°" : "");
+      var tools = document.createElement("div"); tools.className = "tools";
+      function mk(html, label, fn, cls, disabled){
+        var btn = document.createElement("button"); btn.type = "button"; btn.innerHTML = html;
+        btn.setAttribute("aria-label", label); if (cls) btn.className = cls;
+        btn.disabled = !!disabled;
+        btn.addEventListener("click", fn); return btn;
+      }
+      tools.appendChild(mk(ICO2.left, "Geser ke depan", function(){ if (i > 0){ var t = aturPages[i-1]; aturPages[i-1] = aturPages[i]; aturPages[i] = t; renderAturGrid(); } }, "", i === 0));
+      tools.appendChild(mk(ICO2.right, "Geser ke belakang", function(){ if (i < aturPages.length - 1){ var t = aturPages[i+1]; aturPages[i+1] = aturPages[i]; aturPages[i] = t; renderAturGrid(); } }, "", i === aturPages.length - 1));
+      tools.appendChild(mk(ICO2.rotL, "Putar 90 derajat ke kiri", function(){ pg.rot = (pg.rot + 270) % 360; renderAturGrid(); }));
+      tools.appendChild(mk(ICO2.rotR, "Putar 90 derajat ke kanan", function(){ pg.rot = (pg.rot + 90) % 360; renderAturGrid(); }));
+      tools.appendChild(mk(ICO2.del, "Hapus halaman ini", function(){ aturPages.splice(i, 1); renderAturGrid(); syncAturButtons(); }, "del"));
+      card.appendChild(box); card.appendChild(num); card.appendChild(tools);
+      gridAtur.appendChild(card);
+    });
+    aturSummary.textContent = aturFile ? (aturPages.length ? aturPages.length + " halaman akan disimpan, urutannya seperti nomor “Baru” di tiap kartu." : "Semua halaman sudah dihapus — minimal 1 halaman harus tersisa untuk disimpan.") : "";
+  }
+  function syncAturButtons(){
+    btnAtur.disabled = !(aturFile && aturPages.length > 0);
+    btnAturReset.disabled = !aturFile;
+  }
+  function resetAtur(){
+    aturPages.forEach(function(pg){ if (pg.thumb) URL.revokeObjectURL(pg.thumb); });
+    aturPages = [];
+    gridAtur.innerHTML = "";
+    aturSummary.textContent = "";
+    syncAturButtons();
+  }
+
+  fileAtur.addEventListener("change", function(){
+    var f = fileAtur.files && fileAtur.files[0];
+    if (!f) return;
+    resetAtur();
+    if (!isPdfFile(f)){
+      aturFile = null; chipAtur.classList.remove("show");
+      setStatus(statusAtur, "Berkas ini bukan PDF. Pilih berkas berekstensi .pdf ya.", "err");
+      return;
+    }
+    aturFile = f;
+    chipAturName.textContent = f.name;
+    chipAturSize.textContent = fmtSize(f.size);
+    chipAtur.classList.add("show");
+    progAtur.classList.add("show"); progAtur.value = 10;
+    setStatus(statusAtur, "Membaca halaman PDF…");
+    loadPdfJs().then(function(){
+      return readAsArrayBuffer(f);
+    }).then(function(buf){
+      return window.pdfjsLib.getDocument({ data: buf }).promise;
+    }).then(function(pdfDoc){
+      var total = pdfDoc.numPages;
+      var chain = Promise.resolve();
+      for (var p = 1; p <= total; p++){
+        (function(pageNo){
+          chain = chain.then(function(){
+            progAtur.value = 10 + Math.round(85 * (pageNo - 1) / total);
+            return pdfDoc.getPage(pageNo).then(function(page){
+              var base = page.getViewport({ scale: 1 });
+              var scale = 260 / Math.max(base.width, base.height);
+              var viewport = page.getViewport({ scale: scale });
+              var canvas = document.createElement("canvas");
+              canvas.width = Math.round(viewport.width);
+              canvas.height = Math.round(viewport.height);
+              var ctx = canvas.getContext("2d");
+              ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+              return page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function(){
+                return new Promise(function(resolve){
+                  canvas.toBlob(function(blob){
+                    aturPages.push({ src: pageNo - 1, rot: 0, thumb: blob ? URL.createObjectURL(blob) : "" });
+                    resolve();
+                  }, "image/jpeg", 0.82);
+                });
+              });
+            });
+          });
+        })(p);
+      }
+      return chain.then(function(){ return total; });
+    }).then(function(total){
+      renderAturGrid(); syncAturButtons();
+      progAtur.value = 100;
+      setStatus(statusAtur, total + " halaman terbaca. Putar, hapus, atau geser urutannya, lalu simpan sebagai PDF baru.", "ok");
+    }).catch(function(err){
+      var msg = (err && err.message) ? err.message : String(err);
+      if (/password/i.test(msg)) setStatus(statusAtur, "PDF ini dilindungi kata sandi, jadi halamannya tidak bisa dibuka. Lepas kata sandinya dulu, lalu coba lagi.", "err");
+      else setStatus(statusAtur, "Gagal membaca PDF ini: " + msg, "err");
+      aturFile = null; chipAtur.classList.remove("show"); syncAturButtons();
+    }).finally(function(){
+      setTimeout(function(){ progAtur.classList.remove("show"); progAtur.value = 0; }, 1200);
+    });
+  });
+
+  document.getElementById("chipAturRemove").addEventListener("click", function(){
+    aturFile = null; fileAtur.value = "";
+    chipAtur.classList.remove("show");
+    resetAtur(); setStatus(statusAtur, "");
+  });
+  btnAturReset.addEventListener("click", function(){
+    if (!aturFile) return;
+    /* Muat ulang berkas yang sama dari awal: putaran, urutan, dan halaman
+       terhapus kembali seperti aslinya. */
+    try {
+      var dt = new DataTransfer();
+      dt.items.add(aturFile);
+      fileAtur.files = dt.files;
+      fileAtur.dispatchEvent(new Event("change"));
+    } catch (e) {
+      var kept = aturFile;
+      aturFile = null; fileAtur.value = "";
+      chipAtur.classList.remove("show");
+      resetAtur();
+      setStatus(statusAtur, "Pengaturan halaman sudah dikosongkan. Pilih lagi berkas “" + kept.name + "” untuk mulai dari awal.", "");
+    }
+  });
+
+  btnAtur.addEventListener("click", function(){
+    if (!aturFile || !aturPages.length) return;
+    btnAtur.disabled = true; btnAturReset.disabled = true;
+    progAtur.classList.add("show"); progAtur.value = 10;
+    setStatus(statusAtur, "Memuat pustaka PDF (sekali saja)…");
+    loadLib("pdflib").then(function(){
+      return readAsArrayBuffer(aturFile);
+    }).then(function(buf){
+      var PDFLib = window.PDFLib;
+      return PDFLib.PDFDocument.load(buf, { ignoreEncryption: true }).then(function(src){
+        return PDFLib.PDFDocument.create().then(function(out){
+          var indices = aturPages.map(function(pg){ return pg.src; });
+          return out.copyPages(src, indices).then(function(copied){
+            copied.forEach(function(page, i){
+              var extra = aturPages[i].rot;
+              if (extra){
+                var current = 0;
+                try { current = page.getRotation().angle || 0; } catch (e) { current = 0; }
+                page.setRotation(PDFLib.degrees((current + extra) % 360));
+              }
+              out.addPage(page);
+            });
+            progAtur.value = 70;
+            setStatus(statusAtur, "Menyimpan PDF baru…");
+            return out.save();
+          });
+        });
+      });
+    }).then(function(bytes){
+      downloadBlob(new Blob([bytes], { type: "application/pdf" }), baseName(aturFile.name) + "-diatur.pdf");
+      progAtur.value = 100;
+      setStatus(statusAtur, "Selesai — PDF baru berisi " + aturPages.length + " halaman sudah diunduh sebagai " + baseName(aturFile.name) + "-diatur.pdf. Berkas aslimu tidak berubah.", "ok");
+    }).catch(function(err){
+      var msg = (err && err.message) ? err.message : String(err);
+      if (/encrypt/i.test(msg)) setStatus(statusAtur, "PDF ini terkunci / terenkripsi, jadi halamannya tidak bisa disalin. Buka kuncinya dulu di aplikasi lain, lalu coba lagi.", "err");
+      else setStatus(statusAtur, "Gagal menyimpan PDF: " + msg, "err");
+    }).finally(function(){
+      syncAturButtons();
+      setTimeout(function(){ progAtur.classList.remove("show"); progAtur.value = 0; }, 1200);
+    });
+  });
+
+  /* ================= KECILKAN FOTO =================
+     Target dalam KB diubah ke byte. Untuk tiap foto: coba dulu pada
+     resolusi asli — cari kualitas JPEG tertinggi yang masih di bawah
+     target (pencarian biner). Kalau kualitas paling rendah pun masih
+     kegedean, resolusi diturunkan bertahap dan pencarian diulang.
+     Ukuran dicek dari panjang data URL (base64 ≈ byte asli), jadi
+     tidak perlu membuat blob berulang kali; blob final dibuat sekali. */
+  var fileKompres = document.getElementById("fileKompres");
+  var gridKompres = document.getElementById("gridKompres");
+  var gridKompresHasil = document.getElementById("gridKompresHasil");
+  var btnKompres = document.getElementById("btnKompres");
+  var btnKompresZip = document.getElementById("btnKompresZip");
+  var btnKompresClear = document.getElementById("btnKompresClear");
+  var statusKompres = document.getElementById("statusKompres");
+  var progKompres = document.getElementById("progKompres");
+  var optTargetKb = document.getElementById("optTargetKb");
+  var targetPresetBtns = Array.prototype.slice.call(document.querySelectorAll("#targetPresets button"));
+  var kompresPhotos = []; // {name, url, w, h, size}
+  var kompresResults = []; // {name, url, blob, size, origSize, reached}
+
+  wireDrop(document.getElementById("dropKompres"), fileKompres);
+
+  function targetBytes(){
+    var kb = parseInt(optTargetKb.value, 10);
+    if (isNaN(kb)) kb = 200;
+    kb = Math.min(10240, Math.max(20, kb));
+    return kb * 1024;
+  }
+  function syncTargetPresets(){
+    var kb = parseInt(optTargetKb.value, 10);
+    targetPresetBtns.forEach(function(b){
+      b.setAttribute("aria-pressed", parseInt(b.getAttribute("data-kb"), 10) === kb ? "true" : "false");
+    });
+  }
+  targetPresetBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      optTargetKb.value = b.getAttribute("data-kb");
+      syncTargetPresets();
+    });
+  });
+  optTargetKb.addEventListener("input", syncTargetPresets);
+  optTargetKb.addEventListener("change", function(){
+    optTargetKb.value = Math.round(targetBytes() / 1024);
+    syncTargetPresets();
+  });
+  syncTargetPresets();
+
+  function renderKompresGrid(){
+    gridKompres.innerHTML = "";
+    kompresPhotos.forEach(function(p, i){
+      var card = document.createElement("div"); card.className = "thumb";
+      var box = document.createElement("div"); box.className = "imgbox";
+      var img = document.createElement("img"); img.src = p.url; img.alt = p.name;
+      box.appendChild(img);
+      var num = document.createElement("span"); num.className = "num"; num.textContent = fmtSize(p.size);
+      var tools = document.createElement("div"); tools.className = "tools";
+      var del = document.createElement("button"); del.type = "button"; del.innerHTML = ICO.del;
+      del.setAttribute("aria-label", "Hapus foto " + p.name); del.className = "del";
+      del.addEventListener("click", function(){
+        kompresPhotos.splice(i, 1);
+        clearKompresResults();
+        renderKompresGrid(); syncKompresButtons();
+      });
+      tools.appendChild(del);
+      card.appendChild(box); card.appendChild(num); card.appendChild(tools);
+      gridKompres.appendChild(card);
+    });
+  }
+  function syncKompresButtons(){
+    btnKompres.disabled = kompresPhotos.length === 0;
+    btnKompresClear.disabled = kompresPhotos.length === 0 && kompresResults.length === 0;
+    btnKompresZip.disabled = kompresResults.length < 2;
+  }
+  function clearKompresResults(){
+    kompresResults.forEach(function(r){ if (r.url) URL.revokeObjectURL(r.url); });
+    kompresResults = [];
+    gridKompresHasil.innerHTML = "";
+  }
+
+  fileKompres.addEventListener("change", function(){
+    var files = Array.prototype.slice.call(fileKompres.files || []);
+    fileKompres.value = "";
+    if (!files.length) return;
+    clearKompresResults();
+    var pending = files.length, failed = 0;
+    setStatus(statusKompres, "Memuat foto…");
+    files.forEach(function(f){
+      if (!/^image\//.test(f.type)){ failed++; if (--pending === 0) doneK(); return; }
+      var reader = new FileReader();
+      reader.onload = function(){
+        var img = new Image();
+        img.onload = function(){
+          kompresPhotos.push({ name: f.name, url: reader.result, w: img.naturalWidth, h: img.naturalHeight, size: f.size || 0 });
+          if (--pending === 0) doneK();
+        };
+        img.onerror = function(){ failed++; if (--pending === 0) doneK(); };
+        img.src = reader.result;
+      };
+      reader.onerror = function(){ failed++; if (--pending === 0) doneK(); };
+      reader.readAsDataURL(f);
+    });
+    function doneK(){
+      renderKompresGrid(); syncKompresButtons();
+      if (kompresPhotos.length) setStatus(statusKompres, kompresPhotos.length + " foto siap dikecilkan. Atur ukuran maksimumnya, lalu klik “Kecilkan Sekarang”." + (failed ? " " + failed + " berkas dilewati karena bukan foto yang bisa dibaca." : ""), "ok");
+      else setStatus(statusKompres, "Tidak ada foto yang bisa dibaca dari pilihan itu.", "err");
+    }
+  });
+
+  btnKompresClear.addEventListener("click", function(){
+    kompresPhotos = [];
+    clearKompresResults();
+    renderKompresGrid(); syncKompresButtons();
+    setStatus(statusKompres, "");
+  });
+
+  function dataUrlBytes(dataUrl){
+    var comma = dataUrl.indexOf(",");
+    var b64 = comma >= 0 ? dataUrl.slice(comma + 1) : dataUrl;
+    var pad = 0;
+    if (b64.endsWith("==")) pad = 2; else if (b64.endsWith("=")) pad = 1;
+    return Math.floor(b64.length * 3 / 4) - pad;
+  }
+  function loadImg(src){
+    return new Promise(function(resolve, reject){
+      var img = new Image();
+      img.onload = function(){ resolve(img); };
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+  function compressOne(p, target){
+    return loadImg(p.url).then(function(img){
+      var srcW = img.naturalWidth, srcH = img.naturalHeight;
+      var scales = [1, 0.85, 0.7, 0.55, 0.45, 0.35, 0.25, 0.18, 0.12, 0.08];
+      var smallest = null;
+      for (var s = 0; s < scales.length; s++){
+        var sc = scales[s];
+        var c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(srcW * sc));
+        c.height = Math.max(1, Math.round(srcH * sc));
+        var ctx = c.getContext("2d");
+        ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        var lowUrl = c.toDataURL("image/jpeg", 0.3);
+        var lowSize = dataUrlBytes(lowUrl);
+        if (!smallest || lowSize < smallest.size) smallest = { dataUrl: lowUrl, size: lowSize, w: c.width, h: c.height };
+        if (lowSize > target) continue; /* kualitas terendah saja kegedean — perkecil resolusi */
+        /* Pencarian biner kualitas tertinggi yang masih di bawah target */
+        var lo = 0.3, hi = 1.0, bestUrl = lowUrl, bestSize = lowSize;
+        for (var it = 0; it < 6; it++){
+          var mid = (lo + hi) / 2;
+          var url = c.toDataURL("image/jpeg", mid);
+          var sz = dataUrlBytes(url);
+          if (sz <= target){ bestUrl = url; bestSize = sz; lo = mid; } else { hi = mid; }
+        }
+        return { dataUrl: bestUrl, size: bestSize, reached: true, w: c.width, h: c.height };
+      }
+      return { dataUrl: smallest.dataUrl, size: smallest.size, reached: false, w: smallest.w, h: smallest.h };
+    });
+  }
+  function dataUrlToBlob(dataUrl){
+    var parts = dataUrl.split(",");
+    var mime = (parts[0].match(/:(.*?);/) || [])[1] || "image/jpeg";
+    var bin = atob(parts[1]);
+    var arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return new Blob([arr], { type: mime });
+  }
+  function renderKompresResults(){
+    gridKompresHasil.innerHTML = "";
+    kompresResults.forEach(function(r){
+      var card = document.createElement("div"); card.className = "pagecard";
+      var box = document.createElement("div"); box.className = "imgbox";
+      var img = document.createElement("img"); img.src = r.url; img.alt = r.name;
+      box.appendChild(img);
+      var meta = document.createElement("div"); meta.className = "result-meta";
+      var b = document.createElement("b"); b.textContent = r.name;
+      var line = document.createElement("span");
+      var pct = r.origSize > 0 ? Math.max(0, Math.round((1 - r.size / r.origSize) * 100)) : 0;
+      line.textContent = fmtSize(r.origSize) + " → " + fmtSize(r.size) + " (−" + pct + "%)";
+      meta.appendChild(b); meta.appendChild(line);
+      if (!r.reached){
+        var miss = document.createElement("span"); miss.className = "miss";
+        miss.textContent = "Target belum tercapai — ini hasil terkecil yang bisa dibuat.";
+        meta.appendChild(document.createElement("br")); meta.appendChild(miss);
+      }
+      var tools = document.createElement("div"); tools.className = "tools";
+      var a = document.createElement("a");
+      a.href = r.url; a.download = r.name; a.innerHTML = ICO2.dl;
+      a.setAttribute("aria-label", "Unduh " + r.name);
+      tools.appendChild(a);
+      card.appendChild(box); card.appendChild(meta); card.appendChild(tools);
+      gridKompresHasil.appendChild(card);
+    });
+    syncKompresButtons();
+  }
+
+  btnKompres.addEventListener("click", function(){
+    if (!kompresPhotos.length) return;
+    var target = targetBytes();
+    var targetKb = Math.round(target / 1024);
+    btnKompres.disabled = true; btnKompresClear.disabled = true; btnKompresZip.disabled = true;
+    clearKompresResults();
+    progKompres.classList.add("show"); progKompres.value = 5;
+    var chain = Promise.resolve();
+    kompresPhotos.forEach(function(p, idx){
+      chain = chain.then(function(){
+        progKompres.value = 5 + Math.round(90 * idx / kompresPhotos.length);
+        setStatus(statusKompres, "Mengecilkan foto " + (idx + 1) + " dari " + kompresPhotos.length + " (" + p.name + ") ke maks. " + targetKb + " KB…");
+        return compressOne(p, target).then(function(res){
+          var blob = dataUrlToBlob(res.dataUrl);
+          kompresResults.push({
+            name: baseName(p.name) + "-kecil.jpg",
+            url: URL.createObjectURL(blob),
+            blob: blob,
+            size: blob.size,
+            origSize: p.size || 0,
+            reached: res.reached && blob.size <= target
+          });
+        });
+      });
+    });
+    chain.then(function(){
+      renderKompresResults();
+      progKompres.value = 100;
+      var missed = kompresResults.filter(function(r){ return !r.reached; }).length;
+      var totalOrig = kompresResults.reduce(function(n, r){ return n + r.origSize; }, 0);
+      var totalNew = kompresResults.reduce(function(n, r){ return n + r.size; }, 0);
+      setStatus(statusKompres, "Selesai — " + kompresResults.length + " foto dikecilkan: total " + fmtSize(totalOrig) + " → " + fmtSize(totalNew) + " (target maks. " + targetKb + " KB per foto)." + (missed ? " " + missed + " foto belum mencapai target dan ditandai di kartunya." : " Semua foto sudah di bawah target.") + (kompresResults.length === 1 ? " Unduh lewat tombol di kartunya." : " Unduh satu-satu lewat tombol di tiap kartu, atau semuanya pakai tombol ZIP."), missed ? "" : "ok");
+    }).catch(function(err){
+      setStatus(statusKompres, "Gagal mengecilkan foto: " + ((err && err.message) ? err.message : err), "err");
+    }).finally(function(){
+      syncKompresButtons();
+      btnKompres.disabled = kompresPhotos.length === 0;
+      setTimeout(function(){ progKompres.classList.remove("show"); progKompres.value = 0; }, 1200);
+    });
+  });
+
+  btnKompresZip.addEventListener("click", function(){
+    if (kompresResults.length < 2) return;
+    btnKompresZip.disabled = true;
+    setStatus(statusKompres, "Menyiapkan ZIP…");
+    loadLib("jszip").then(function(){
+      var zip = new window.JSZip();
+      kompresResults.forEach(function(r){ zip.file(r.name, r.blob); });
+      return zip.generateAsync({ type: "blob" });
+    }).then(function(blob){
+      downloadBlob(blob, "foto-kecil-pdfcrate.zip");
+      setStatus(statusKompres, "ZIP berisi " + kompresResults.length + " foto hasil kecilkan sudah diunduh.", "ok");
+    }).catch(function(err){
+      setStatus(statusKompres, "Gagal membuat ZIP: " + ((err && err.message) ? err.message : err), "err");
+    }).finally(function(){
+      syncKompresButtons();
+    });
+  });
+})();
+</script>
+</body>
+</html>
