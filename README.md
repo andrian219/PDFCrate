@@ -2,7 +2,7 @@
 
 Free PDF tools that run **entirely in your web browser**. Your files are never uploaded to a server — everything is processed on your own device.
 
-**Use it right away, no installation:** https://andrian219.github.io/pdfcrate/
+**Use it right away, no installation:** https://andrian219.github.io/PDFCrate/
 
 **Interface language:** tap the **EN / ID** button in the top-right corner to switch between English and Indonesian. Your choice is remembered on your device.
 
@@ -29,7 +29,7 @@ One note: the page loads its code libraries from a CDN, so it needs an internet 
 
 Kumpulan alat PDF gratis yang berjalan **sepenuhnya di browser**. Berkasmu tidak pernah diunggah ke server — semua diproses di perangkatmu sendiri.
 
-**Langsung pakai, tanpa memasang apa pun:** https://andrian219.github.io/pdfcrate/
+**Langsung pakai, tanpa memasang apa pun:** https://andrian219.github.io/PDFCrate/
 
 **Bahasa tampilan:** ketuk tombol **EN / ID** di pojok kanan atas untuk berganti antara Bahasa Inggris dan Bahasa Indonesia. Pilihanmu tersimpan di perangkatmu.
 
