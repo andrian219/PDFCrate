@@ -1736,5 +1736,266 @@
   });
 })();
 </script>
+<script>
+(function () {
+  var DICT = {
+    "Semua urusan PDF beres dari HP-mu.": "All your PDF jobs, done right from your phone.",
+    "Pilih fitur": "Choose a tool",
+    "Word ke PDF": "Word to PDF",
+    "Foto ke PDF": "Photos to PDF",
+    "Gabung PDF": "Merge PDF",
+    "PDF jadi Foto": "PDF to Photos",
+    "Atur Halaman PDF": "Organize PDF Pages",
+    "Kecilkan Foto": "Shrink Photos",
+    "Privat — berkasmu tidak ke mana-mana.": "Private — your files go nowhere.",
+    "Semua proses berjalan di dalam browser perangkatmu. Tidak ada unggahan ke server, tidak ada yang disimpan. Tutup halaman ini, selesai.": "Everything runs inside your device's browser. Nothing is uploaded to a server, nothing is stored. Close this page and you're done.",
+    "Pilih berkas": "Choose a file",
+    "(Word modern), lihat pratinjaunya, lalu unduh sebagai PDF. Dokumen ditampilkan mengikuti tata letak aslinya — gaya teks, tabel, dan posisi gambar dipertahankan seperti di Word. Format .doc lama tidak didukung.": "(modern Word), preview it, then download it as a PDF. The document keeps its original layout — text styles, tables, and image positions stay as they are in Word. The old .doc format is not supported.",
+    "Tarik & letakkan berkas .docx di sini": "Drag & drop a .docx file here",
+    "atau pakai tombol di bawah — berkas tidak diunggah ke mana pun": "or use the button below — the file is not uploaded anywhere",
+    "Pratinjau dokumen": "Document preview",
+    "Buat & Unduh PDF": "Create & Download PDF",
+    "Pilih beberapa foto sekaligus (JPG, PNG, WebP) — tiap foto jadi satu halaman PDF. Urutannya bisa diatur sebelum dibuat, dan kualitas hasilnya bisa diatur di bawah: makin tinggi kualitasnya makin tajam gambarnya, makin besar pula ukuran berkas PDF-nya.": "Pick several photos at once (JPG, PNG, WebP) — each photo becomes one PDF page. You can reorder them before creating the PDF, and set the quality below: higher quality means sharper images and a larger PDF file.",
+    "Tarik & letakkan foto di sini": "Drag & drop photos here",
+    "bisa banyak sekaligus — foto tidak diunggah ke mana pun": "many at once are fine — photos are not uploaded anywhere",
+    "Ukuran halaman": "Page size",
+    "Ikuti ukuran foto": "Match photo size",
+    "Margin halaman": "Page margins",
+    "Tanpa margin (penuh)": "No margins (full page)",
+    "Sedang — 10 mm": "Medium — 10 mm",
+    "Lebar — 20 mm": "Wide — 20 mm",
+    "Kualitas foto": "Photo quality",
+    "Maksimal": "Maximum",
+    "Tinggi": "High",
+    "Seimbang": "Balanced",
+    "Sedang": "Medium",
+    "Hemat": "Smallest",
+    "40% — berkas paling kecil": "40% — smallest file",
+    "100% — paling tajam": "100% — sharpest",
+    "Kualitas maksimal: paling tajam dan paling dekat ke foto asli — ukuran PDF juga paling besar.": "Maximum quality: sharpest and closest to the original photo — the PDF size is also the largest.",
+    "Kualitas tinggi: gambar tajam seperti aslinya, ukuran PDF lebih besar. Turunkan kalau PDF-nya mau dikirim lewat WA atau email.": "High quality: images as sharp as the originals, with a larger PDF. Lower it if the PDF will be sent via WhatsApp or email.",
+    "Kualitas seimbang: tetap enak dilihat di layar dan dicetak biasa, ukuran PDF jauh lebih kecil.": "Balanced quality: still pleasant on screen and in regular prints, with a much smaller PDF size.",
+    "Kualitas sedang: cukup buat dilihat di HP dan dikirim cepat; detail halus mulai berkurang.": "Medium quality: enough for viewing on a phone and quick sending; fine details start to soften.",
+    "Kualitas hemat: ukuran PDF paling kecil, gambar terlihat lebih lembut — cocok buat arsip cepat atau kirim lewat koneksi lambat.": "Smallest size: the tiniest PDF, with softer-looking images — good for quick archives or slow connections.",
+    "Resolusi foto": "Photo resolution",
+    "Asli — tanpa diperkecil": "Original — no downscaling",
+    "Tinggi — maks. 3000 px": "High — max. 3000 px",
+    "Sedang — maks. 2000 px": "Medium — max. 2000 px",
+    "Ringan — maks. 1280 px": "Light — max. 1280 px",
+    "Perkiraan hasil": "Estimated result",
+    "Pilih foto dulu — perkiraan ukuran PDF muncul di sini, ukuran pastinya tampil setelah PDF dibuat.": "Pick photos first — the estimated PDF size appears here; the exact size shows once the PDF is created.",
+    "Hapus semua": "Clear all",
+    "Pilih beberapa berkas PDF sekaligus, atur urutannya, lalu gabungkan jadi satu PDF. Urutan dari atas ke bawah adalah urutan halaman di hasil akhir.": "Pick several PDF files at once, arrange their order, then merge them into one PDF. Top to bottom is the page order of the final file.",
+    "Tarik & letakkan berkas PDF di sini": "Drag & drop PDF files here",
+    "bisa banyak sekaligus — berkas tidak diunggah ke mana pun": "many at once are fine — files are not uploaded anywhere",
+    "Gabung & Unduh PDF": "Merge & Download PDF",
+    "Pilih satu berkas PDF — tiap halamannya diubah jadi gambar. Cocok buat mengirim satu halaman lewat WA atau menyisipkan halaman PDF ke dokumen lain.": "Pick one PDF file — every page becomes an image. Handy for sending a single page via WhatsApp or inserting a PDF page into another document.",
+    "Format gambar": "Image format",
+    "JPG — ukuran lebih kecil": "JPG — smaller file size",
+    "PNG — paling tajam, ukuran lebih besar": "PNG — sharpest, larger file size",
+    "Ketajaman render": "Render sharpness",
+    "Sedang — cepat, cukup buat layar HP": "Medium — fast, enough for a phone screen",
+    "Tinggi — tajam buat dibaca & dicetak": "High — sharp for reading & printing",
+    "Maksimal — paling tajam, proses lebih lama": "Maximum — sharpest, slower to process",
+    "Ubah Semua Halaman jadi Foto": "Convert All Pages to Photos",
+    "Unduh Semua (ZIP)": "Download All (ZIP)",
+    "Putar, Hapus & Urutkan Halaman PDF": "Rotate, Delete & Reorder PDF Pages",
+    "Pilih satu berkas PDF, lalu putar halaman yang miring, hapus halaman yang tidak perlu, dan geser urutannya. Hasilnya disimpan sebagai PDF baru — berkas aslimu tidak berubah.": "Pick one PDF file, then rotate slanted pages, delete pages you don't need, and drag them into order. The result is saved as a new PDF — your original file stays untouched.",
+    "Simpan & Unduh PDF Baru": "Save & Download New PDF",
+    "Ulangi dari Awal": "Start Over",
+    "Kecilkan Foto ke Ukuran Pas": "Shrink Photos to an Exact Size",
+    "Pilih satu atau beberapa foto, tentukan ukuran maksimumnya, lalu alat ini otomatis menurunkan kualitas — dan resolusi bila perlu — sampai hasil di bawah target. Pas buat unggah berkas kuliah, lamaran, dan pendaftaran yang batas ukurannya ketat.": "Pick one or more photos, set a maximum size, and this tool automatically lowers the quality — and the resolution if needed — until the result fits under the target. Perfect for college, job, and registration uploads with strict size limits.",
+    "bisa banyak sekaligus (JPG, PNG, WebP) — foto tidak diunggah ke mana pun": "many at once are fine (JPG, PNG, WebP) — photos are not uploaded anywhere",
+    "Ukuran maksimum hasil": "Maximum result size",
+    "KB maks. per foto": "Max KB per photo",
+    "Isi bebas juga bisa — misalnya 150 atau 300. Hasil disimpan sebagai JPG; foto yang sudah lebih kecil dari target tetap diproses supaya pasti di bawah batas, dengan kualitas setinggi mungkin.": "You can also type any number — for example 150 or 300. Results are saved as JPG; photos already smaller than the target are still processed to make sure they stay under the limit, at the highest possible quality.",
+    "Kecilkan Sekarang": "Shrink Now",
+    "Catatan hasil:": "Notes on the results:",
+    "dokumen Word ditampilkan mengikuti tata letak aslinya lalu dirender per halaman pada resolusi tinggi supaya teks & gambar tajam. Untuk dokumen yang rumit banget (text box bertumpuk, efek WordArt), hasil bisa tetap sedikit berbeda dari Microsoft Word. Gabung PDF serta putar/hapus halaman menyalin halaman apa adanya tanpa merender ulang, jadi kualitas PDF aslinya tetap utuh. Kecilkan Foto menyimpan hasil sebagai JPG — foto PNG dengan latar transparan akan diberi latar putih.": "Word documents keep their original layout and are rendered page by page at high resolution so text & images stay sharp. For very complex documents (stacked text boxes, WordArt effects), the result may still differ slightly from Microsoft Word. Merge PDF and page rotating/deleting copy pages as-is without re-rendering, so the original PDF quality stays intact. Shrink Photos saves results as JPG — PNG photos with transparent backgrounds get a white background.",
+    "PDFCrate — dibuat oleh Akari": "PDFCrate — made by Akari",
+    "PDFCrate — alat PDF gratis, 100% berjalan di browser.": "PDFCrate — free PDF tools, 100% in your browser.",
+    "Hapus berkas": "Remove file",
+    "Hapus foto": "Remove photo",
+    "Hapus halaman ini": "Delete this page",
+    "Geser ke belakang": "Move back",
+    "Geser ke depan": "Move forward",
+    "Naikkan urutan": "Move up",
+    "Turunkan urutan": "Move down",
+    "Putar 90 derajat": "Rotate 90 degrees",
+    "Putar 90 derajat ke kanan": "Rotate 90° right",
+    "Putar 90 derajat ke kiri": "Rotate 90° left",
+    "Ganti mode gelap / terang": "Toggle dark / light mode",
+    "Berkas ini bukan .docx. PDFCrate hanya mendukung format Word modern (.docx) — format .doc lama belum bisa.": "This file is not a .docx. PDFCrate only supports the modern Word format (.docx) — the old .doc format is not supported yet.",
+    "Membaca dokumen…": "Reading the document…",
+    "Dokumen terbaca tapi tidak ada halaman yang bisa ditampilkan.": "The document was read, but no page could be displayed.",
+    "Gagal membaca berkas dari perangkat.": "Failed to read the file from your device.",
+    "Pustaka pembaca Word gagal dimuat. Periksa koneksi internet lalu coba lagi.": "The Word reader library failed to load. Check your internet connection and try again.",
+    "Belum ada halaman dokumen yang bisa dibuat PDF. Muat ulang berkasnya dulu.": "There is no document page to turn into a PDF yet. Reload the file first.",
+    "Memuat pustaka PDF (sekali saja)…": "Loading the PDF library (one time only)…",
+    "Pustaka PDF gagal dimuat. Periksa koneksi internet lalu coba lagi.": "The PDF library failed to load. Check your internet connection and try again.",
+    "Memuat foto…": "Loading photos…",
+    "Tidak ada foto yang bisa dibaca dari pilihan itu.": "No readable photos in that selection.",
+    "Tidak ada berkas PDF yang bisa dibaca dari pilihan itu.": "No readable PDF files in that selection.",
+    "Menghitung halaman tiap berkas…": "Counting the pages of each file…",
+    "Salah satu berkas PDF terkunci / terenkripsi, jadi tidak bisa digabung. Buka kuncinya dulu di aplikasi lain, lalu coba lagi.": "One of the PDF files is locked / encrypted and cannot be merged. Unlock it in another app first, then try again.",
+    "Berkas ini bukan PDF. Pilih berkas berekstensi .pdf ya.": "This file is not a PDF. Please pick a file with the .pdf extension.",
+    "PDF siap. Pilih format & ketajaman, lalu klik “Ubah Semua Halaman jadi Foto”.": "PDF ready. Choose the format & sharpness, then click “Convert All Pages to Photos”.",
+    "Memuat pustaka pembaca PDF (sekali saja)…": "Loading the PDF reader library (one time only)…",
+    "PDF ini dilindungi kata sandi, jadi halamannya tidak bisa dibuka. Lepas kata sandinya dulu, lalu coba lagi.": "This PDF is password-protected, so its pages cannot be opened. Remove the password first, then try again.",
+    "Menyiapkan ZIP…": "Preparing the ZIP…",
+    "Membaca halaman PDF…": "Reading the PDF pages…",
+    "Menyimpan PDF baru…": "Saving the new PDF…",
+    "PDF ini terkunci / terenkripsi, jadi halamannya tidak bisa disalin. Buka kuncinya dulu di aplikasi lain, lalu coba lagi.": "This PDF is locked / encrypted, so its pages cannot be copied. Unlock it in another app first, then try again.",
+    "Semua halaman sudah dihapus — minimal 1 halaman harus tersisa untuk disimpan.": "All pages have been deleted — at least 1 page must remain to be saved.",
+    "Menyiapkan foto…": "Preparing photos…"
+  };
+  var LABEL = { "Maksimal": "Maximum", "Tinggi": "High", "Seimbang": "Balanced", "Sedang": "Medium", "Hemat": "Smallest" };
+  var PATTERNS = [
+    [/^Dokumen siap — (\d+) halaman, tampil persis seperti tata letak aslinya\. Klik “Buat & Unduh PDF” untuk mengunduh\.$/, function (m) { return "Document ready — " + m[1] + " pages, shown exactly in its original layout. Click “Create & Download PDF” to download."; }],
+    [/^Gagal membaca dokumen ini: ([\s\S]+)$/, function (m) { return "Failed to read this document: " + m[1]; }],
+    [/^Merender halaman (\d+) dari (\d+)…$/, function (m) { return "Rendering page " + m[1] + " of " + m[2] + "…"; }],
+    [/^Selesai — PDF (\d+) halaman sudah diunduh\. Cek folder unduhanmu\.$/, function (m) { return "Done — a " + m[1] + "-page PDF has been downloaded. Check your downloads folder."; }],
+    [/^Gagal membuat PDF: ([\s\S]+)$/, function (m) { return "Failed to create the PDF: " + m[1]; }],
+    [/^(\d+) foto siap\. Atur urutannya kalau perlu, lalu klik “Buat & Unduh PDF”\. (\d+) berkas dilewati karena bukan foto yang bisa dibaca\.$/, function (m) { return m[1] + " photos ready. Reorder them if needed, then click “Create & Download PDF”. " + m[2] + " files were skipped because they are not readable photos."; }],
+    [/^(\d+) foto siap\. Atur urutannya kalau perlu, lalu klik “Buat & Unduh PDF”\.$/, function (m) { return m[1] + " photos ready. Reorder them if needed, then click “Create & Download PDF”."; }],
+    [/^Memproses foto (\d+) dari (\d+)…$/, function (m) { return "Processing photo " + m[1] + " of " + m[2] + "…"; }],
+    [/^Selesai — PDF (\d+) halaman( \([^)]*\))? sudah diunduh sebagai foto-pdfcrate\.pdf\. Kualitas (\d+)% \((Maksimal|Tinggi|Seimbang|Sedang|Hemat)\), (resolusi maks\. \d+ px|resolusi asli)\. Kurang tajam atau berkasnya kegedean\? Geser kualitasnya lalu buat lagi\.$/, function (m) { var res = m[5] === "resolusi asli" ? "original resolution" : m[5].replace("resolusi maks.", "max. resolution"); return "Done — a " + m[1] + "-page PDF" + (m[2] || "") + " has been downloaded as foto-pdfcrate.pdf. Quality " + m[3] + "% (" + (LABEL[m[4]] || m[4]) + "), " + res + ". Not sharp enough, or the file too big? Adjust the quality and create it again."; }],
+    [/^(\d+) berkas siap digabung( — total (\d+) halaman)?\. Butuh minimal 2 berkas\.( (\d+) berkas dilewati karena bukan PDF\.)?$/, function (m) { return m[1] + " files ready to merge" + (m[3] ? " — " + m[3] + " pages in total" : "") + ". At least 2 files are needed." + (m[5] ? " " + m[5] + " files were skipped because they are not PDFs." : ""); }],
+    [/^Menggabungkan berkas (\d+) dari (\d+) \((.+)\)…$/, function (m) { return "Merging file " + m[1] + " of " + m[2] + " (" + m[3] + ")…"; }],
+    [/^Selesai — (\d+) berkas jadi satu PDF( \((\d+) halaman\))?, sudah diunduh sebagai gabungan-pdfcrate\.pdf\.$/, function (m) { return "Done — " + m[1] + " files merged into one PDF" + (m[3] ? " (" + m[3] + " pages)" : "") + ", downloaded as gabungan-pdfcrate.pdf."; }],
+    [/^Gagal menggabungkan PDF: ([\s\S]+)$/, function (m) { return "Failed to merge the PDFs: " + m[1]; }],
+    [/^Selesai — (\d+) halaman jadi foto\. Unduh satu-satu lewat tombol di tiap kartu, atau semuanya sekaligus pakai tombol ZIP\.$/, function (m) { return "Done — " + m[1] + " pages turned into photos. Download them one by one from each card, or all at once with the ZIP button."; }],
+    [/^Gagal mengubah PDF jadi foto: ([\s\S]+)$/, function (m) { return "Failed to convert the PDF to photos: " + m[1]; }],
+    [/^ZIP berisi (\d+) foto hasil kecilkan sudah diunduh\.$/, function (m) { return "A ZIP with " + m[1] + " shrunk photos has been downloaded."; }],
+    [/^ZIP berisi (\d+) foto sudah diunduh\.$/, function (m) { return "A ZIP with " + m[1] + " photos has been downloaded."; }],
+    [/^Gagal membuat ZIP: ([\s\S]+)$/, function (m) { return "Failed to create the ZIP: " + m[1]; }],
+    [/^(\d+) halaman terbaca\. Putar, hapus, atau geser urutannya, lalu simpan sebagai PDF baru\.$/, function (m) { return m[1] + " pages loaded. Rotate, delete, or reorder them, then save as a new PDF."; }],
+    [/^Gagal membaca PDF ini: ([\s\S]+)$/, function (m) { return "Failed to read this PDF: " + m[1]; }],
+    [/^Pengaturan halaman sudah dikosongkan\. Pilih lagi berkas “(.+)” untuk mulai dari awal\.$/, function (m) { return "The page arrangement has been cleared. Pick the file “" + m[1] + "” again to start over."; }],
+    [/^Selesai — PDF baru berisi (\d+) halaman sudah diunduh sebagai (.+)-diatur\.pdf\. Berkas aslimu tidak berubah\.$/, function (m) { return "Done — a new PDF with " + m[1] + " pages has been downloaded as " + m[2] + "-diatur.pdf. Your original file is unchanged."; }],
+    [/^Gagal menyimpan PDF: ([\s\S]+)$/, function (m) { return "Failed to save the PDF: " + m[1]; }],
+    [/^(\d+) foto siap dikecilkan\. Atur ukuran maksimumnya, lalu klik “Kecilkan Sekarang”\.( (\d+) berkas dilewati karena bukan foto yang bisa dibaca\.)?$/, function (m) { return m[1] + " photos ready to shrink. Set the maximum size, then click “Shrink Now”." + (m[3] ? " " + m[3] + " files were skipped because they are not readable photos." : ""); }],
+    [/^Mengecilkan foto (\d+) dari (\d+) \((.+)\) ke maks\. (\d+) KB…$/, function (m) { return "Shrinking photo " + m[1] + " of " + m[2] + " (" + m[3] + ") to max. " + m[4] + " KB…"; }],
+    [/^Selesai — (\d+) foto dikecilkan: total (.+) → (.+) \(target maks\. (\d+) KB per foto\)\.([\s\S]*)$/, function (m) { var tail = m[5]; tail = tail.replace(/ (\d+) foto belum mencapai target dan ditandai di kartunya\./, function (x, n) { return " " + n + " photos did not reach the target and are marked on their cards."; }); tail = tail.replace(" Semua foto sudah di bawah target.", " All photos are under the target."); tail = tail.replace(" Unduh lewat tombol di kartunya.", " Download it from the button on its card."); tail = tail.replace(" Unduh satu-satu lewat tombol di tiap kartu, atau semuanya pakai tombol ZIP.", " Download them one by one from each card, or all of them with the ZIP button."); return "Done — " + m[1] + " photos shrunk: total " + m[2] + " → " + m[3] + " (target max. " + m[4] + " KB per photo)." + tail; }],
+    [/^Gagal mengecilkan foto: ([\s\S]+)$/, function (m) { return "Failed to shrink the photos: " + m[1]; }],
+    [/^(\d+) foto · total asli (.+) · perkiraan PDF ± (.+)–(.+) \(kualitas (\d+)%, (.+)\)\.$/, function (m) { var res = m[6]; if (res === "resolusi asli") res = "original resolution"; else res = res.replace("resolusi maks.", "max. resolution"); return m[1] + " photos · original total " + m[2] + " · estimated PDF ± " + m[3] + "–" + m[4] + " (quality " + m[5] + "%, " + res + ")."; }],
+    [/^([\s\S]+) · (\d+) halaman$/, function (m) { return m[1] + " · " + m[2] + " pages"; }],
+    [/^([\s\S]+) · halaman belum terbaca$/, function (m) { return m[1] + " · page count unread"; }],
+    [/^Baru (\d+) · asli (\d+)( · ↻ (\d+)°)?$/, function (m) { return "New " + m[1] + " · original " + m[2] + (m[4] ? " · ↻ " + m[4] + "°" : ""); }],
+    [/^(\d+) halaman akan disimpan, urutannya seperti nomor “Baru” di tiap kartu\.$/, function (m) { return m[1] + " pages will be saved, in the order of the “New” number on each card."; }],
+    [/^(\d+)% · (Maksimal|Tinggi|Seimbang|Sedang|Hemat)$/, function (m) { return m[1] + "% · " + (LABEL[m[2]] || m[2]); }],
+    [/^Unduh ([\s\S]+)$/, function (m) { return "Download " + m[1]; }],
+    [/^Hapus foto ([\s\S]+)$/, function (m) { return "Remove photo " + m[1]; }]
+  ];
+  var lang = "id";
+  try { lang = localStorage.getItem("pdfcrate-lang") || "id"; } catch (e) {}
+  var originals = new Map();
+  var attrOriginals = new Map();
+  function tr(s) {
+    if (lang !== "en" || !s) return s;
+    var lead = s.match(/^\s*/)[0], trail = s.match(/\s*$/)[0];
+    var core = s.slice(lead.length, s.length - trail.length || undefined);
+    if (!core) return s;
+    if (Object.prototype.hasOwnProperty.call(DICT, core)) return lead + DICT[core] + trail;
+    for (var i = 0; i < PATTERNS.length; i++) {
+      var m = core.match(PATTERNS[i][0]);
+      if (m) return lead + PATTERNS[i][1](m) + trail;
+    }
+    return s;
+  }
+  function excluded(node) {
+    var el = node.parentElement;
+    while (el) { if (el.id === "docPreview") return true; el = el.parentElement; }
+    return false;
+  }
+  function translateTextNode(node) {
+    if (excluded(node)) return;
+    var v = node.nodeValue;
+    if (!v || !v.trim()) return;
+    if (!originals.has(node)) originals.set(node, v);
+    var t = tr(v);
+    if (t !== v) node.nodeValue = t;
+  }
+  function translateAttrs(root) {
+    var els = root.querySelectorAll ? root.querySelectorAll("[aria-label],[title]") : [];
+    els.forEach(function (el) {
+      ["aria-label", "title"].forEach(function (attr) {
+        var a = el.getAttribute(attr);
+        if (!a) return;
+        var key = el;
+        if (!attrOriginals.has(key)) attrOriginals.set(key, {});
+        var rec = attrOriginals.get(key);
+        if (!(attr in rec)) rec[attr] = a;
+        var t = tr(a);
+        if (t !== a) el.setAttribute(attr, t);
+      });
+    });
+  }
+  function translateTree(root) {
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: function (n) {
+      var p = n.parentElement;
+      if (!p) return NodeFilter.FILTER_REJECT;
+      var tag = p.tagName;
+      if (tag === "SCRIPT" || tag === "STYLE" || tag === "NOSCRIPT") return NodeFilter.FILTER_REJECT;
+      if (!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }});
+    var nodes = [], n;
+    while ((n = w.nextNode())) nodes.push(n);
+    nodes.forEach(translateTextNode);
+    translateAttrs(root);
+  }
+  function restoreAll() {
+    originals.forEach(function (v, node) { if (node.nodeValue !== v) node.nodeValue = v; });
+    originals.clear();
+    attrOriginals.forEach(function (rec, el) {
+      Object.keys(rec).forEach(function (attr) { el.setAttribute(attr, rec[attr]); });
+    });
+    attrOriginals.clear();
+  }
+  var obs = new MutationObserver(function (muts) {
+    if (lang !== "en") return;
+    var targets = [];
+    muts.forEach(function (m) {
+      if (m.type === "characterData") targets.push(m.target);
+      if (m.addedNodes) m.addedNodes.forEach(function (n) {
+        if (n.nodeType === 3) targets.push(n);
+        else if (n.nodeType === 1) {
+          var w = document.createTreeWalker(n, NodeFilter.SHOW_TEXT);
+          var x; while ((x = w.nextNode())) targets.push(x);
+          translateAttrs(n);
+        }
+      });
+    });
+    if (!targets.length) return;
+    obs.disconnect();
+    targets.forEach(translateTextNode);
+    obs.observe(document.body, { childList: true, subtree: true, characterData: true });
+  });
+  function startObs() { obs.observe(document.body, { childList: true, subtree: true, characterData: true }); }
+  var btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "langBtn";
+  btn.className = "theme-btn";
+  btn.style.fontWeight = "700";
+  btn.style.fontSize = "12.5px";
+  btn.setAttribute("aria-label", "Switch language / Ganti bahasa");
+  var themeBtn = document.getElementById("themeBtn");
+  if (themeBtn && themeBtn.parentNode) themeBtn.parentNode.insertBefore(btn, themeBtn);
+  function apply(l) {
+    lang = l;
+    try { localStorage.setItem("pdfcrate-lang", l); } catch (e) {}
+    document.documentElement.setAttribute("lang", l === "en" ? "en" : "id");
+    document.title = l === "en" ? "PDFCrate — Word, Photo & PDF Tools" : "PDFCrate — Word, Foto & Alat PDF";
+    btn.textContent = l === "en" ? "ID" : "EN";
+    obs.disconnect();
+    if (l === "en") translateTree(document.body); else restoreAll();
+    startObs();
+  }
+  btn.addEventListener("click", function () { apply(lang === "en" ? "id" : "en"); });
+  if (lang === "en") apply("en"); else { btn.textContent = "EN"; startObs(); }
+})();
+
+</script>
 </body>
 </html>
